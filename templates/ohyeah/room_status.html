@@ -2,7 +2,10 @@
 {% load ohyeah_filter %}
 {%block content%}
 {%include 'navbar.html' %}
-{% with status_date|convert_str_date as status %}                                    
+{% with status_date|convert_str_date as status %}       
+<button class="btn btn-primary" data-toggle="modal" data-target="#testModal" data-whatever="test">
+    test
+</button>
 <div class="row ohyeah-row">
         <div class="p-3 container">
             <div class="row ohyeah-row">
@@ -377,6 +380,184 @@
         
             </div>
         </div>
+
+        <!-- test modal start -->
+        <!-- The Modal -->
+        <div class="modal fade" id="testModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+            
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">test호 예약 / 체크인</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+            
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="rent-type">
+                                <select class="form-select" id="rentType" name="rentType" >
+                                    <option value="notChoice">대실/숙박 선택</option>
+                                    <option value="rent">대실</option>
+                                    <option value="stay">숙박</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text" id="guestNameText">고객명</span>
+                                <input type="text" name="guestName" id="guestName" class="form-control" placeholder="고객이름">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="date_type">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-6 text-center">
+                                        <label for="startDate">체크인</label>
+                                        <input id="startDate" name="startDate" class="form-control" type="date"/>
+                                        <span id="startDateSelected"></span>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <label for="endDate">체크아웃</label>
+                                        <input id="endDate" name="endDate" class="form-control" type="date" />
+                                        <span id="endDateSelected"></span>
+                                    </div>
+                                    <div class="text-center">
+                                        <span id="nights">&nbsp;</span><span>박</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text" id="guestPhoneText">연락처</span>
+                                <input type="text" name="guestphone" id="guestphone" class="form-control" placeholder="연락처">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="input-group ">
+                                <span class="input-group-text" id="totalRoomMoneyText">총액</span>
+                                <input type="text" name="total" id="total" class="form-control" placeholder="총금액">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text" id="cashRoomMoneyText">현금</span>
+                                <input type="text" name="cash" id="cash" class="form-control inputMoney" placeholder="현금">
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="online_type" checked>
+                                <label class="form-check-label" for="online_type" >판매가(비활성화 입금가)</label>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text" id="cashRoomMoneyText">온라인</span>
+                                <input type="text" name="online" id="online" class="form-control inputMoney" placeholder="온라인 금액">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text" id="cardRoomMoneyText">카드</span>
+                                <input type="text" name="card" id="card" class="form-control inputMoney" placeholder="카드">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text" id="bankRoomMoneyText">계좌</span>
+                                <input type="text" name="bank" id="bank" class="form-control inputMoney" placeholder="계좌">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text" id="misuRoomMoneyText">미수</span>
+                                <input type="text" name="misu" id="misu" class="form-control inputMoney" placeholder="미수금">
+                            </div>
+                            <div class= >
+                                <span id="resultMoney">&nbsp;</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text" id="guestCompany">회사명</span>
+                                <input id="companyName" name="companyName" class="form-control" />
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text" id="person">인원수</span>
+                                <input id="persons" name="persons" class="form-control" />
+                                <span class="input-group-text">명</span>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text" id="comingText">유입방법</span>
+                                <select class="form-select" id="comming">
+                                    <option value="notChoice">OTA 및 유입방법 선택</option>
+                                    <option value="yanolja">야놀자</option>
+                                    <option value="hotelstory">호텔스토리</option>
+                                    <option value="walkin">워크인</option>
+                                    <option value="calling">유선예약</option>
+                                    <option value="kiosk">무인기</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text" id="guestTypeText">고객유형</span>
+                                <select class="form-select" id="guestType">
+                                    <option value="notChoice">고객 유형 선택</option>
+                                    <option value="wic">워크인 커플</option>
+                                    <option value="wib">워크인 비즈니스</option>
+                                    <option value="wif">워크인 패밀리</option>
+                                    <option value="onc">온라인 커플</option>
+                                    <option value="onb">온라인 비즈니스</option>
+                                    <option value="onf">온라인 패밀리</option>
+                                    <option value="kioskguest">무인기</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text" id="guestCheckinTime">C/I 시간</span>
+                                <input id="checkinTime" name="checkinTime" class="form-control" type="time" list="popularHours">
+                                    <datalist id="popularHours">
+                                    <option value="00:00">
+                                    <option value="01:00">
+                                    <option value="02:00">
+                                    <option value="03:00">
+                                    <option value="04:00">
+                                    <option value="05:00">
+                                    <option value="06:00">
+                                    <option value="07:00">
+                                    <option value="08:00">
+                                    <option value="09:00">
+                                    <option value="10:00">
+                                    <option value="11:00">
+                                    <option value="12:00">
+                                    <option value="13:00">
+                                    <option value="14:00">
+                                    <option value="15:00">
+                                    <option value="16:00">
+                                    <option value="17:00">
+                                    <option value="18:00">
+                                    <option value="19:00">
+                                    <option value="20:00">
+                                    <option value="21:00">
+                                    <option value="22:00">
+                                    <option value="23:00">
+                                    </datalist>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="guest_info">고객 기타 정보 기입</label>
+                            <textarea id="guest_info" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" id="resButton" class="btn btn-primary" onclick="resSubmit()" >예약 저장</button>
+                    <button type="button" id="chkButton" class="btn btn-success" onclick="bookSubmit()" >체크인 진행</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
+                </div>
+            
+                </div>
+            </div>
+        </div>
+        <!-- test modal end-->
 </div>
 {%endwith%}   
 {%include 'footer.html' %}
@@ -436,6 +617,18 @@
 {%endblock%}
 {%block script%}
 <script>
+    
+    $('#testModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var recipient = button.data('whatever') // Extract info from data-* attributes
+        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+        var modal = $(this)
+        modal.find('.modal-title').text('New message to ' + recipient)
+        modal.find('.modal-body input').val(recipient)
+      })
+
+
     startDate = document.getElementById('startDate')
     endDate = document.getElementById('endDate')
     resSearchDate = document.getElementById('reserveDate')
