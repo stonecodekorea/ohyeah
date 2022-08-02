@@ -1,0 +1,127 @@
+{% extends 'base.html'%}
+{% block content %}
+<div class="container">
+    <div class="accordion">
+        <div class="accordion-item">
+            <div class="accordion-header">
+                예약 상세 내역
+            </div>
+            <div class="accordion-body">
+                <table class="table table-hover w-auto">
+                    <tr>
+                        <th class="table-active">예약자</th>
+                        <td colspan="3"><p id="res_id">{{reservation.res_name}}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">객실번호</th>
+                        <td colspan="3"><p id="res_room_number">{{reservation.res_room_number}}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">총 금액</th>
+                        <td colspan="3"><p id="res_total_money">{{reservation.res_money}}</p></td>
+                        
+                    </tr>
+                    <tr>
+                        <th class="table-active">현금 금액</th>
+                        <td><p id="res_cash_money">{{reservation.res_cash_money}}</p></td>
+                        <th class="table-active">카드 금액</th>
+                        <td>{{reservation.res_card_money}}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">계좌 금액</th>
+                        <td><p id="res_bank_money">{{reservation.res_bank_money}}</p></td>
+                        <th class="table-active">미수 금액</th>
+                        <td><p id="res_misu_money">{{reservation.res_misu_money}}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="table-active" >이용 인원</th>
+                        <td colspan="3"><p id="res_person">{{reservation.res_person}}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">투숙 방식</th>
+                        {% if reservation.res_type == "rent" %}
+                            <td>대실</td>
+                        {% else %}
+                            <td>숙박</td>
+                        {% endif %}
+                        <th class="table-active">예약 채널</th>
+                        {% if reservation.res_ota == "yanolja" %}
+                        <td>야놀자</td>
+                        {%elif reservation.res_ota == "hotelstory" %}
+                        <td>호텔스토리</td>
+                        {%elif reservation.res_ota == "walkin" %}
+                        <td>워크인</td>
+                        {%else %}
+                        <td>무인기</td>
+                        {%endif%}
+                    </tr>
+                    <tr>
+                        <th class="table-active">회사명</th>
+                        <td colspan="3"><p id="res_company">{{reservation.res_company}}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">고객타입</th>
+                        {% if reservation.res_guest_type == "wic" %}
+                        <td colspan="3">워크인 커플</td>
+                        {%elif reservation.res_guest_type == "wib" %}
+                        <td colspan="3">워크인 비즈니스</td>
+                        {%elif reservation.res_guest_type == "wif" %}
+                        <td colspan="3">워크인 패밀리</td>
+                        {%elif reservation.res_guest_type == "onc" %}
+                        <td colspan="3">온라인 커플</td>
+                        {%elif reservation.res_guest_type == "onb" %}
+                        <td colspan="3">온라인 비즈니스</td>
+                        {%elif reservation.res_guest_type == "onf" %}
+                        <td colspan="3">온라인 패밀리</td>
+                        {%else %}
+                        <td colspan="3">무인기</td>
+                        {%endif%}
+                    </tr>
+                    <tr>
+                        <th class="table-active">고객 연락처</th>
+                        <td colspan="3"><p id="res_guest_phone">{{reservation.res_guest_phone}}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">체크인</th>
+                        <td><p id="res_chkin">{{reservation.res_chkin|date:'Y-m-d'}}</p></td>
+                        <th class="table-active">체크아웃</th>
+                        <td><p id="res_chkout">{{reservation.res_chkout|date:'Y-m-d'}}</p></td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">체크인 시간</th>
+                        <td><p id="res_chk_time">{{reservation.res_chk_time|date:'H:i:s'}}</p></td>
+                        <th class="table-active">예약 접수</th>
+                        <td>{{reservation.res_date|date:'Y-m-d H:i:s'}}</td>
+                    </tr>       
+                    <tr>
+                        <th class="table-active">지불 방법</th>
+                        <td colspan="3"><p id="res_payment_info">{{reservation.res_payment_info}}</p></td>
+                    </tr>       
+                    <tr>
+                        <th class="table-active">기타 고객 정보</th>
+                        <td colspan="3"><p id="res_guest_info">{{reservation.res_guest_info}}</p></td>
+                    </tr>       
+                </table>
+                <div>
+                    <a class="btn btn-primary" href="{% url 'ohyeah:res_modify' reservation.id%}">예약 수정</a>
+                    <a class="btn btn-success" href="{% url 'ohyeah:res_book' reservation.id%}">체크인하기</a>
+                    <a class="btn btn-danger" href="{% url 'ohyeah:res_delete' reservation.id%}" onclick="closeWindowReload()">예약 삭제/취소</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+name = document.getElementById('res_name').value
+
+function closeWindowReload(){
+    window.onunload = refreshParent;
+    function refreshParent() {
+        window.opener.location.reload();
+    }
+}
+</script>
+{% endblock %}

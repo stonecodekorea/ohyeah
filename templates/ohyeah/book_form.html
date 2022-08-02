@@ -1,0 +1,415 @@
+{% extends 'base.html' %}
+{% block content %}
+{{test.form}}
+<h4 class="modal-title">
+    {{form.book_room_number}} 호 예약 수정</h4>
+<div class="row">
+    <div class="col-md-6">
+        <div class="rent-type">
+            <select class="form-select" id="rentType" name="rentType"  >
+                <option value="{{form.book_type}}" selected="selected">
+                    {%if form.book_type == "rent" %}
+                    대실
+                    {%else%}
+                    숙박
+                    {%endif%}
+                </option>
+                <option value="notChoice">대실/숙박 선택</option>
+                <option value="rent">대실</option>
+                <option value="stay">숙박</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text" id="guestNameText">고객명</span>
+            <input type="text" name="guestName" id="guestName" class="form-control" placeholder="고객이름" value="{{form.book_name|default_if_none:''}}">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="date_type">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center">
+                    <label for="startDate">체크인</label>
+                    <input id="startDate" name="startDate" class="form-control" type="date" value="{{form.book_chkin|date:'Y-m-d'|default_if_none:''}}"/>
+                    <span id="startDateSelected"></span>
+                </div>
+                <div class="col-md-6 text-center">
+                    <label for="endDate">체크아웃</label>
+                    <input id="endDate" name="endDate" class="form-control" type="date" value="{{form.book_chkout|date:'Y-m-d'|default_if_none:''}}"/>
+                    <span id="endDateSelected"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text" id="guestPhoneText">연락처</span>
+            <input type="text" name="guestphone" id="guestphone" class="form-control" placeholder="연락처" value="{{form.book_guest_phone|default_if_none:''}}">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text" id="totalRoomMoneyText">총액</span>
+            <input type="text" name="total" id="total" class="form-control" placeholder="총금액" value="{{form.book_money|default_if_none:''}}">
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="cashRoomMoneyText">현금</span>
+            <input type="text" name="cash" id="cash" class="form-control inputMoney" placeholder="현금" value="{{form.book_cash_money|default_if_none:''}}">
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="cardRoomMoneyText">카드</span>
+            <input type="text" name="card" id="card" class="form-control inputMoney" placeholder="카드" value="{{form.book_card_money|default_if_none:''}}">
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="bankRoomMoneyText">계좌</span>
+            <input type="text" name="bank" id="bank" class="form-control inputMoney" placeholder="계좌" value="{{form.book_bank_money|default_if_none:''}}">
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="misuRoomMoneyText">미수</span>
+            <input type="text" name="misu" id="misu" class="form-control inputMoney" placeholder="미수금" value="{{form.book_misu_money|default_if_none:''}}">
+        </div>
+        <div class= >
+            <span id="resultMoney">&nbsp;</span>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="input-group">
+            <span class="input-group-text" id="guestCompany">회사명</span>
+            <input id="companyName" name="companyName" class="form-control" value="{{form.book_company|default_if_none:''}}"/>
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="person">인원수</span>
+            <input id="persons" name="persons" class="form-control" value="{{form.book_person|default_if_none:''}}"/>
+            <span class="input-group-text">명</span>
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="comingText">유입방법</span>
+            <select class="form-select" id="comming" >
+                <option value="{{form.book_ota}}" selected="selected">
+                    {%if form.book_ota == "yanolja" %}
+                    야놀자
+                    {%elif form.book_ota == "hotelstory" %}
+                    호텔스토리
+                    {%elif form.book_ota == "walkin" %}
+                    워크인
+                    {%elif form.book_ota == "calling" %}
+                    유선예약
+                    {%elif form.book_ota == "kiosk" %}
+                    무인기
+                    {%endif%}
+                </option>
+                <option value="notChoice">OTA 및 유입방법 선택</option>
+                <option value="yanolja">야놀자</option>
+                <option value="hotelstory">호텔스토리</option>
+                <option value="walkin">워크인</option>
+                <option value="calling">유선예약</option>
+                <option value="kiosk">무인기</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="guestTypeText">고객유형</span>
+            <select class="form-select" id="guestType">
+                <option value="{{form.book_guest_type}}" selected="selected">
+                    {% if form.book_guest_type == "wic" %}
+                        워크인 커플
+                    {%elif form.book_guest_type == "wib" %}
+                        워크인 비즈니스
+                    {%elif form.book_guest_type == "wif" %}
+                        워크인 패밀리
+                    {%elif form.book_guest_type == "onc" %}
+                        온라인 커플
+                    {%elif form.book_guest_type == "onb" %}
+                        온라인 비즈니스
+                    {%elif form.book_guest_type == "onf" %}
+                        온라인 패밀리
+                    {%elif form.book_guest_type == "kioskguest" %}
+                        무인기
+                    {%endif%}
+                </option>
+                <option value="notChoice">고객 유형 선택</option>
+                <option value="wic">워크인 커플</option>
+                <option value="wib">워크인 비즈니스</option>
+                <option value="wif">워크인 패밀리</option>
+                <option value="onc">온라인 커플</option>
+                <option value="onb">온라인 비즈니스</option>
+                <option value="onf">온라인 패밀리</option>
+                <option value="kioskguest">무인기</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="guestCheckinTime">C/I 시간</span>
+            <input id="checkinTime" name="checkinTime" class="form-control" type="time" list="popularHours" value="{{form.book_chk_time|date:'H:i:s'|default_if_none:''}}">
+                <datalist id="popularHours">
+                <option value="00:00">
+                <option value="01:00">
+                <option value="02:00">
+                <option value="03:00">
+                <option value="04:00">
+                <option value="05:00">
+                <option value="06:00">
+                <option value="07:00">
+                <option value="08:00">
+                <option value="09:00">
+                <option value="10:00">
+                <option value="11:00">
+                <option value="12:00">
+                <option value="13:00">
+                <option value="14:00">
+                <option value="15:00">
+                <option value="16:00">
+                <option value="17:00">
+                <option value="18:00">
+                <option value="19:00">
+                <option value="20:00">
+                <option value="21:00">
+                <option value="22:00">
+                <option value="23:00">
+                </datalist>
+        </div>
+    </div>
+    <button type="button" id="resButton" class="btn btn-primary" onclick="resSubmit({{form.book_room_number}})" >입실 저장</button>
+</div>
+<form id="bookForm" method="POST" action="{% url 'ohyeah:book_modify' book_id %}">
+    {% csrf_token %}
+    <input type="hidden" name="book_name" id="res_name">
+    <input type="hidden" name="book_room_number" id="res_room_number" value="{{form.book_room_number}}">
+    <input type="hidden" name="book_money" id="res_money">
+    <input type="hidden" name="book_person" id="res_person">
+    <input type="hidden" name="book_type" id="res_type" value="{{form.book_type}}">
+    <input type="hidden" name="book_ota" id="res_ota" value="{{form.book_ota}}">
+    <input type="hidden" name="book_company" id="res_company">
+    <input type="hidden" name="book_payment_info" id="res_payment_info">
+    <input type="hidden" name="book_guest_info" id="res_guest_info" value="none">
+    <input type="hidden" name="book_chkin" id="res_chkin_date" value="{{form.book_chkin|date:'Y-m-d'|default_if_none:''}}">
+    <input type="hidden" name="book_chkout" id="res_chkout_date" value="{{form.book_chkout|date:'Y-m-d'|default_if_none:''}}">
+    <input type="hidden" name="book_chk_time" id="res_chk_time" value="{{form.book_chk_time|date:'H:i:s'|default_if_none:''}}">
+    <input type="hidden" name="book_guest_type" id="res_guest_type" value="{{form.book_guest_type}}">
+    <input type="hidden" name="book_guest_phone" id="res_guest_phone">
+    <input type="hidden" name="book_cash_money" id="res_cash_money" value='0'>
+    <input type="hidden" name="book_card_money" id="res_card_money" value='0'>
+    <input type="hidden" name="book_bank_money" id="res_bank_money" value='0'>
+    <input type="hidden" name="book_misu_money" id="res_misu_money" value='0'>
+    <input type="submit" style="visibility:hidden" value="res">
+</form>
+<form id="searchForm" method="GET">
+    <input type="hidden" name="res_date" id="res_date">
+    <input type="submit" style="visibility:hidden" value="search">
+</form>
+
+{%endblock%}
+{%block script%}
+<script>
+    startDate = document.getElementById('startDate')
+    endDate = document.getElementById('endDate')
+    roomN = document.getElementById('roomNumber')
+    roomNChanged = 'N'
+    
+    rentType = document.getElementById('rentType')
+    res_room_number,res_name, res_money, res_person, res_type, res_ota, res_company,res_payment_info,res_guest_info,res_chkin_date,res_chkout_date,res_chk_time,res_guest_phone,res_guest_type
+
+    
+
+    totalRoomMoney = 0
+    cashRoomMoney = 0
+    cardRoomMoney = 0
+    bankRoomMoney = 0
+    misuRoomMoney = 0
+    inputMoney = 0
+
+    function chkResType(){
+        if (!res_type){
+            alert('대실 / 숙박 체크해주세요')
+            return false
+        }   
+        if (!res_ota){
+            alert('유입방법 체크해주세요')
+            return false
+        }   
+        if (!res_guest_type){
+            alert('고객유형 체크해주세요')
+            return false
+        }   
+        if(res_ota == 'notChoice'){
+            alert('유입방법 체크해주세요')
+            return false
+        }
+        if(res_guest_type == 'notChoice'){
+            alert('고객유형 체크해주세요')
+            return false
+        }
+        if(res_type == 'notChoice'){
+            alert('대실 / 숙박 체크해주세요')
+            return false
+        }
+        return true
+        
+    }
+
+
+
+    function resSubmit(roomNumber){
+        res_room_number = roomNumber
+        
+        
+        console.log(res_room_number)
+        document.getElementById('startDate').innerText=document.getElementById('res_chkin_date').value
+        document.getElementById('endDate').innerText=document.getElementById('res_chkout_date').value
+        document.getElementById('res_room_number').value = res_room_number
+        document.getElementById('res_name').value=document.getElementById('guestName').value
+        document.getElementById('res_money').value=document.getElementById('total').value
+        document.getElementById('res_cash_money').value=document.getElementById('cash').value
+        document.getElementById('res_card_money').value=document.getElementById('card').value
+        document.getElementById('res_bank_money').value=document.getElementById('bank').value
+        document.getElementById('res_misu_money').value=document.getElementById('misu').value
+        document.getElementById('res_person').value=document.getElementById('persons').value
+        document.getElementById('res_company').value=document.getElementById('companyName').value
+        document.getElementById('res_guest_phone').value=document.getElementById('guestphone').value
+        _result = chkResType()
+        if(!_result){
+            alert('test')
+            return false
+        }
+        document.getElementById('bookForm').submit()
+    }
+
+    document.querySelectorAll('#startDate').forEach(item => {
+        item.addEventListener('change', event => {
+            let startDateVal = event.target.value
+            document.getElementById('startDate').innerText = startDateVal
+            res_chkin_date = startDateVal
+            document.getElementById('res_chkin_date').value = res_chkin_date
+        })
+    })
+
+
+    document.querySelectorAll('#endDate').forEach(item => {
+        item.addEventListener('change', event => {
+            let endDateVal = event.target.value
+            document.getElementById('endDate').innerText = endDateVal
+            res_chkout_date = endDateVal
+            document.getElementById('res_chkout_date').value = res_chkout_date
+        })
+    })
+  
+    
+    document.querySelectorAll('#persons').forEach(item => {
+        item.addEventListener('change', event => {
+            res_person = event.target.value
+            console.log(res_person)
+            document.getElementById('res_person').value = res_person
+        })
+    })
+    
+
+    document.querySelectorAll('#companyName').forEach(item => {
+        item.addEventListener('change', event => {
+            res_company = event.target.value
+            console.log(res_company)
+            document.getElementById('res_company').value = res_company
+        })
+    })
+    
+    document.querySelectorAll('#guestphone').forEach(item => {
+        item.addEventListener('change', event => {
+            res_guest_phone = event.target.value
+            console.log(res_guest_phone)
+            document.getElementById('res_guest_phone').value = res_guest_phone
+        })
+    })
+    
+    document.querySelectorAll('#guestType').forEach(item => {
+        item.addEventListener('change', event => {
+            res_guest_type = event.target.value
+            console.log(res_guest_type)
+            document.getElementById('res_guest_type').value = res_guest_type
+        })
+    })
+
+    document.querySelectorAll('#comming').forEach(item => {
+        item.addEventListener('change', event => {
+            res_ota = event.target.value
+            console.log(res_ota)
+            document.getElementById('res_ota').value = res_ota
+        })
+    })
+    
+    document.querySelectorAll('#checkinTime').forEach(item => {
+        item.addEventListener('change', event => {
+            res_chk_time = event.target.value
+            console.log(res_chk_time)
+            document.getElementById('res_chk_time').value = res_chk_time
+        })
+    })
+
+    rentType.addEventListener('change', event => {
+            res_type=event.target.value
+            console.log(res_type)
+            document.getElementById('res_type').value = res_type
+        })
+
+    document.querySelectorAll('#guestName').forEach(item => {
+        item.addEventListener('change', event => {
+            res_name = event.target.value
+            console.log(res_name)
+            document.getElementById('res_name').value = res_name
+        })
+    })
+
+
+    document.querySelectorAll('#total').forEach(item => {
+        item.addEventListener('change', event => {
+            totalRoomMoney = event.target.value
+            event.srcElement.value = parseInt(totalRoomMoney).toLocaleString('en')
+            document.getElementById('res_money').value = totalRoomMoney
+        })
+    })
+    
+    document.querySelectorAll('.inputMoney').forEach(item => {
+        item.addEventListener('change', event => {
+            test = event
+            if(event.srcElement.id == 'cash'){
+                cashRoomMoney = event.target.value
+                document.getElementById('res_cash_money').value = cashRoomMoney
+            }else if(event.srcElement.id == 'card'){
+                cardRoomMoney = event.target.value
+                document.getElementById('res_card_money').value = cardRoomMoney
+            }else if(event.srcElement.id == 'bank'){
+                bankRoomMoney = event.target.value
+                document.getElementById('res_bank_money').value = bankRoomMoney
+            }else if(event.srcElement.id == 'misu'){
+                misuRoomMoney = event.target.value
+                document.getElementById('res_misu_money').value = misuRoomMoney
+            }else {
+
+            }
+            inputMoney = inputMoney + parseInt(event.target.value)
+            event.srcElement.value = parseInt(event.target.value).toLocaleString('en')
+            result = totalRoomMoney - inputMoney
+            chkMoney(result)
+            
+        })
+    })
+
+    function chkMoney(_result){
+        document.querySelectorAll('#resultMoney').forEach(item => {
+            if(_result == 0){
+                item.innerHTML  = "부족한 금액이 없습니다."
+                item.style.color = "blue"    
+            }else if(_result < 0){
+                item.innerHTML  = Math.abs(_result) + '원의 금액이 많습니다.'
+                item.style.color = "red"    
+            }else {
+                item.innerHTML  = _result + '원의 금액이 부족합니다.'
+                item.style.color = "red"    
+            }
+        })
+        
+        
+    }
+</script>
+{%endblock%}

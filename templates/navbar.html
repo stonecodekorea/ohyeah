@@ -1,0 +1,53 @@
+{%load static%}
+<nav class="navbar navbar-expand-lg bg-light ohyeah-nav">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><img width="150px" src="{% static 'img/ohyeah_logo.png' %}"></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link ohyeah-nav-link" href="{% url 'common:logout' %}">로그아웃</a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link active ohyeah-nav-link" aria-current="page" href="{% url 'ohyeah:index' %}">객실현황</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link ohyeah-nav-link" href="{% url 'ohyeah:room_add' %}">객실추가</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link ohyeah-nav-link" href="{% url 'ohyeah:event_list'%}">이벤트목록</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle ohyeah-nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              리포트
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item ohyeah-nav-link" href="{% url 'ohyeah:daily_report' %}">데일리 리포트</a></li>
+              <li><a class="dropdown-item ohyeah-nav-link" href="{% url 'ohyeah:month_report' %}">월별 리포트</a></li>
+              <li><a class="dropdown-item ohyeah-nav-link" href="#">연도별 리포트</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle ohyeah-nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              OTA 관리
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item ohyeah-nav-link" href="#">야놀자 관리</a></li>
+              <li><a class="dropdown-item ohyeah-nav-link" href="#">호텔스토리 관리</a></li>
+              <li><a class="dropdown-item ohyeah-nav-link" href="#">네이버 예약 관리</a></li>
+            </ul>
+          </li>
+        </ul>
+        
+      
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>

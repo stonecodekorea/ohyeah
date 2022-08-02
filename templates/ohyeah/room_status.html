@@ -1,0 +1,766 @@
+{% extends 'base.html'%}
+{% load ohyeah_filter %}
+{%block content%}
+{%include 'navbar.html' %}
+{% with status_date|convert_str_date as status %}                                    
+<div class="row ohyeah-row">
+        <div class="p-3 container">
+            <div class="row ohyeah-row">
+                <div class="col-10">
+                    {% if res_not_yet_list.count <= 0 %}
+                    <a class="btn btn-primary event-btn" href="#" 
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-custom-class="ohyeah-btn-tooltip"
+                    data-bs-title="남은 예약">0</a>
+                    {% else %}
+                    <a class="btn btn-primary event-btn" href="{% url 'ohyeah:event_status' status_date 'res_not' %}" onclick="window.open(this.href,'이벤트 상세내역','width=800,height=900');return false;">
+                        남은예약 {{res_not_yet_list.count}}
+                    </a>
+                    {% endif %}
+                    {% if res_not_yet_rent_list.count <= 0 %}
+                    <a class="btn btn-primary event-btn" href="#"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-custom-class="ohyeah-btn-tooltip"
+                    data-bs-title="남은 대실 예약">0</a>
+                    {%else%}
+                    <a class="btn btn-primary event-btn" href="{% url 'ohyeah:event_status' status_date 'res_not_rent' %}" onclick="window.open(this.href,'이벤트 상세내역','width=800,height=900');return false;">
+                        남은대실예약 {{res_not_yet_rent_list.count}}
+                    </a>
+                    {%endif%}
+                    {% if res_not_yet_stay_list.count <= 0 %}
+                    <a class="btn btn-primary event-btn" href="#"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-custom-class="ohyeah-btn-tooltip"
+                    data-bs-title="남은 숙박 예약">0</a>
+                    {% else %}
+                    <a class="btn btn-primary event-btn" href="{% url 'ohyeah:event_status' status_date 'res_not_stay' %}" onclick="window.open(this.href,'이벤트 상세내역','width=800,height=900');return false;">
+                        남은숙박예약 {{res_not_yet_stay_list.count}}
+                    </a>
+                    {% endif %}
+                    {% if res_done_list.count <= 0 %}
+                    <a class="btn btn-primary event-btn" href="#"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-custom-class="ohyeah-btn-tooltip"
+                    data-bs-title="예약 입실 완료">0</a>
+                    {% else %}
+                    <a class="btn btn-primary event-btn" href="{% url 'ohyeah:event_status' status_date 'res_done' %}" onclick="window.open(this.href,'이벤트 상세내역','width=800,height=900');return false;">
+                        예약입실완료 {{res_done_list.count}}
+                    </a>
+                    {% endif %}
+                    {% if book_rent_done_list.count <= 0 %}
+                    <a class="btn btn-primary event-btn" href="#"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-custom-class="ohyeah-btn-tooltip"
+                    data-bs-title="대실 개수">0</a>
+                    {% else %}
+                    <a class="btn btn-primary event-btn" href="{% url 'ohyeah:event_status' status_date 'book_rent' %}" onclick="window.open(this.href,'이벤트 상세내역','width=800,height=900');return false;">
+                        대실 {{book_rent_done_list.count}}
+                    </a>
+                    {%endif%}
+                    {% if book_stay_done_list.count <= 0 %}
+                    <a class="btn btn-primary event-btn" href="#"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-custom-class="ohyeah-btn-tooltip"
+                    data-bs-title="숙박 개수">0</a>
+                    {% else %}
+                    <a class="btn btn-primary event-btn" href="{% url 'ohyeah:event_status' status_date 'book_stay' %}" onclick="window.open(this.href,'이벤트 상세내역','width=800,height=900');return false;">
+                        숙박 {{book_stay_done_list.count}}
+                    </a>
+                    {%endif%}
+                    {% if book_out_list.count <= 0 %}
+                    <a class="btn btn-primary event-btn" href="#"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-custom-class="ohyeah-btn-tooltip"
+                    data-bs-title="퇴실 개수">0</a>
+                    {%else%}
+                    <a class="btn btn-primary event-btn"href="{% url 'ohyeah:event_status' status_date 'book_out' %}" onclick="window.open(this.href,'이벤트 상세내역','width=800,height=900');return false;">
+                        퇴실 {{book_out_list.count}}
+                    </a>
+                    {%endif%}
+                    {% if book_cleaned_list.count <= 0 %}
+                    <a class="btn btn-primary event-btn" href="#"
+                    data-bs-toggle="tooltip" data-bs-placement="top"
+                    data-bs-custom-class="ohyeah-btn-tooltip"
+                    data-bs-title="청소 완료 개수">0</a>
+                    {%else%}
+                    <a class="btn btn-primary event-btn" href="{% url 'ohyeah:event_status' status_date 'book_cleaned' %}" onclick="window.open(this.href,'이벤트 상세내역','width=800,height=900');return false;">
+                        청소완료 {{book_cleaned_list.count}}
+                    </a>
+                    {%endif%}
+                </div>
+                <div class="col-2">
+                    <div class="input-group">
+                        <span class="input-group-text" id="resDate">날짜</span>
+                        <input id="reserveDate" class="form-control" type="date"/ value="{{status_date}}">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row ohyeah-row">
+            <div class="ohyeah-status">
+            {% regroup room_list by room_floor as newlist %}
+                {% for f in newlist %}
+                    <div class="room-rec-row">
+                    {% for r in f.list%}
+                        {% if r.room_visi == "yes" %}
+                        <div class="card room_rec justify-content-center" id="room_rec_{{r.room_number}}">
+                            <div class="card-body"> 
+                                <div class="card-title"><button class="btn btn-default room-rec-btn" type="button" data-bs-toggle="modal" data-bs-target="#ohyeahModal_{{r.room_number}}">
+                                    <p class="res-room-btn-text">{{r.room_number}} 입실</p></button></div>
+                                <div class="card-subtitle">
+                                    <div class="res-area">
+                                        <div class="d-flex justify-content-start">
+                                        
+                                        {% for res in res_list %}
+                                                {%if status >= res.res_chkin and status <= res.res_chkout%}
+                                                        {% if res.res_room_number == r.room_number%}
+                                                            {%if res.res_status == "on" %}
+                                                                {% if res.res_type == "rent" %}
+                                                                    <div class="ohyeah-res-link">
+                                                                        <a class="reservationLink" href="{% url 'ohyeah:res_status' res.id %}" onclick="window.open(this.href,'예약상세내역','width=800,height=900');return false;"><i class="bi bi-arrow-down-left-square"></i></i></a>
+                                                                    </div>
+                                                                {% elif res.res_type == "stay" %}
+                                                                    <div class="ohyeah-res-link">
+                                                                        <a class="reservationLink" href="{% url 'ohyeah:res_status' res.id %}" onclick="window.open(this.href,'예약상세내역','width=800,height=900');return false;"><i class="bi bi-arrow-down-left-square-fill"></i></a>
+                                                                    </div>
+                                                                {% else %}
+
+                                                                {% endif %}
+                                                            {%endif%}
+                                                        {% else %}
+                                                        
+                                                        {% endif %}
+                                                {% endif%}
+                                                
+                                        {% endfor %}
+                                    </div>
+                                    <div class="book-area">    
+                                        
+                                        {% for book in book_list %}
+                                            {%if status >= book.book_chkin and status <= book.book_chkout%}
+                                                {% if book.book_room_number == r.room_number%}
+                                                        {% if book.book_type == "rent" and book.book_status == "on" %}
+                                                            <div class="">
+                                                                <a class="bookLinkRent" id="{{book.book_room_number}}" href="{% url 'ohyeah:book_status' book.id %}" onclick="window.open(this.href,'대실 상세내역','width=800,height=900');return false;">
+                                                                    <span class="ohyeah-book-link">{{book.book_name}}</span>
+                                                                </a>
+                                                            </div>
+                                                        {% elif book.book_type == "stay" and book.book_status == "on" and status < book.book_chkout %}
+                                                            <div class="">
+                                                                <a class="bookLinkStay" id="{{book.book_room_number}}" href="{% url 'ohyeah:book_status' book.id %}" onclick="window.open(this.href,'숙박 상세내역','width=800,height=900');return false;">
+                                                                    <span class="ohyeah-book-link">{{book.book_name}}</span>
+                                                                </a>
+                                                            </div>
+                                                        {% elif book.book_type == "stay" and book.book_status == "off" and status < book.book_chkout %}
+                                                            <div class="">
+                                                                <a class="bookLinkOut" id="{{book.book_room_number}}" href="{% url 'ohyeah:book_status' book.id %}" onclick="window.open(this.href,'숙박 상세내역','width=800,height=900');return false;">
+                                                                    <span class="ohyeah-book-link">{{book.book_name}}</span>
+                                                                </a>
+                                                            </div>
+                                                        {% elif book.book_status == "off" %}
+                                                            <div class="">
+                                                                <a class="bookLinkOut" id="{{book.book_room_number}}" href="{% url 'ohyeah:book_status' book.id %}" onclick="window.open(this.href,'숙박 상세내역','width=800,height=900');return false;">
+                                                                    <span class="ohyeah-book-link">{{book.book_name}}</span>
+                                                                </a>
+                                                            </div>
+                                                        {%else%}
+
+                                                        {% endif %}
+                                                {% else %}
+                                                    
+                                                {% endif %}
+                                        
+                                            {% endif %}
+                                                
+                                        {% endfor %}
+                                        &nbsp;
+                                          
+                                        </div>
+                                    </div><!-- res-area end -->
+                                </div>
+                            </div>
+                        </div>
+                        <!-- The Modal -->
+                        <div class="modal fade" id="ohyeahModal_{{r.room_number}}">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                            
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">{{r.room_number}}호 예약 / 체크인</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                            
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="rent-type">
+                                                <select class="form-select" id="rentType" name="rentType" >
+                                                    <option value="notChoice">대실/숙박 선택</option>
+                                                    <option value="rent">대실</option>
+                                                    <option value="stay">숙박</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="guestNameText">고객명</span>
+                                                <input type="text" name="guestName" id="guestName" class="form-control" placeholder="고객이름">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="date_type">
+                                                <div class="row justify-content-center">
+                                                    <div class="col-md-6 text-center">
+                                                        <label for="startDate">체크인</label>
+                                                        <input id="startDate" name="startDate" class="form-control" type="date"/>
+                                                        <span id="startDateSelected"></span>
+                                                    </div>
+                                                    <div class="col-md-6 text-center">
+                                                        <label for="endDate">체크아웃</label>
+                                                        <input id="endDate" name="endDate" class="form-control" type="date" />
+                                                        <span id="endDateSelected"></span>
+                                                    </div>
+                                                    <div class="text-center">
+                                                        <span id="nights">&nbsp;</span><span>박</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="guestPhoneText">연락처</span>
+                                                <input type="text" name="guestphone" id="guestphone" class="form-control" placeholder="연락처">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="input-group ">
+                                                <span class="input-group-text" id="totalRoomMoneyText">총액</span>
+                                                <input type="text" name="total" id="total" class="form-control" placeholder="총금액">
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="cashRoomMoneyText">현금</span>
+                                                <input type="text" name="cash" id="cash" class="form-control inputMoney" placeholder="현금">
+                                            </div>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="online_type" checked>
+                                                <label class="form-check-label" for="online_type" >판매가(비활성화 입금가)</label>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="cashRoomMoneyText">온라인</span>
+                                                <input type="text" name="online" id="online" class="form-control inputMoney" placeholder="온라인 금액">
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="cardRoomMoneyText">카드</span>
+                                                <input type="text" name="card" id="card" class="form-control inputMoney" placeholder="카드">
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="bankRoomMoneyText">계좌</span>
+                                                <input type="text" name="bank" id="bank" class="form-control inputMoney" placeholder="계좌">
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="misuRoomMoneyText">미수</span>
+                                                <input type="text" name="misu" id="misu" class="form-control inputMoney" placeholder="미수금">
+                                            </div>
+                                            <div class= >
+                                                <span id="resultMoney">&nbsp;</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="guestCompany">회사명</span>
+                                                <input id="companyName" name="companyName" class="form-control" />
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="person">인원수</span>
+                                                <input id="persons" name="persons" class="form-control" />
+                                                <span class="input-group-text">명</span>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="comingText">유입방법</span>
+                                                <select class="form-select" id="comming">
+                                                    <option value="notChoice">OTA 및 유입방법 선택</option>
+                                                    <option value="yanolja">야놀자</option>
+                                                    <option value="hotelstory">호텔스토리</option>
+                                                    <option value="walkin">워크인</option>
+                                                    <option value="calling">유선예약</option>
+                                                    <option value="kiosk">무인기</option>
+                                                </select>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="guestTypeText">고객유형</span>
+                                                <select class="form-select" id="guestType">
+                                                    <option value="notChoice">고객 유형 선택</option>
+                                                    <option value="wic">워크인 커플</option>
+                                                    <option value="wib">워크인 비즈니스</option>
+                                                    <option value="wif">워크인 패밀리</option>
+                                                    <option value="onc">온라인 커플</option>
+                                                    <option value="onb">온라인 비즈니스</option>
+                                                    <option value="onf">온라인 패밀리</option>
+                                                    <option value="kioskguest">무인기</option>
+                                                </select>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="guestCheckinTime">C/I 시간</span>
+                                                <input id="checkinTime" name="checkinTime" class="form-control" type="time" list="popularHours">
+                                                    <datalist id="popularHours">
+                                                    <option value="00:00">
+                                                    <option value="01:00">
+                                                    <option value="02:00">
+                                                    <option value="03:00">
+                                                    <option value="04:00">
+                                                    <option value="05:00">
+                                                    <option value="06:00">
+                                                    <option value="07:00">
+                                                    <option value="08:00">
+                                                    <option value="09:00">
+                                                    <option value="10:00">
+                                                    <option value="11:00">
+                                                    <option value="12:00">
+                                                    <option value="13:00">
+                                                    <option value="14:00">
+                                                    <option value="15:00">
+                                                    <option value="16:00">
+                                                    <option value="17:00">
+                                                    <option value="18:00">
+                                                    <option value="19:00">
+                                                    <option value="20:00">
+                                                    <option value="21:00">
+                                                    <option value="22:00">
+                                                    <option value="23:00">
+                                                    </datalist>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label for="guest_info">고객 기타 정보 기입</label>
+                                            <textarea id="guest_info" class="form-control" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                                <!-- Modal footer -->
+                                <div class="modal-footer">
+                                    <button type="button" id="resButton" class="btn btn-primary" onclick="resSubmit({{r.room_number}})" >예약 저장</button>
+                                    <button type="button" id="chkButton" class="btn btn-success" onclick="bookSubmit({{r.room_number}})" >체크인 진행</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
+                                </div>
+                            
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="card room_rec_hidden justify-content-center" id="room_rec_">
+                            <div class="card-body">
+                                <div class="card-title"><button class="btn btn-default room-rec-btn" type="button" data-bs-toggle="modal" data-bs-target="#ohyeahModal_{{r.room_number}}">
+                                    <p class="res-room-btn-text">{{r.room_number}} 입실</p></button></div>
+                                    <div class="card-subtitle">
+                                        <div class="res-area">
+                                            <div class="d-flex justify-content-start">
+                                            &nbsp;
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {%endif%}
+                    {%endfor%}
+                    </div>
+                {%endfor%}
+            
+        
+            </div>
+        </div>
+</div>
+{%endwith%}   
+{%include 'footer.html' %}
+<form id="resForm" method="POST" action="{% url 'ohyeah:res_add' %}">
+    {% csrf_token %}
+    <input type="hidden" name="res_name" id="res_name">
+    <input type="hidden" name="res_room_number" id="res_room_number">
+    <input type="hidden" name="res_money" id="res_money">
+    <input type="hidden" name="res_person" id="res_person">
+    <input type="hidden" name="res_type" id="res_type">
+    <input type="hidden" name="res_ota" id="res_ota">
+    <input type="hidden" name="res_company" id="res_company">
+    <input type="hidden" name="res_payment_info" id="res_payment_info">
+    <input type="hidden" name="res_guest_info" id="res_guest_info" value="none">
+    <input type="hidden" name="res_chkin" id="res_chkin_date">
+    <input type="hidden" name="res_chkout" id="res_chkout_date">
+    <input type="hidden" name="res_chk_time" id="res_chk_time">
+    <input type="hidden" name="res_guest_type" id="res_guest_type">
+    <input type="hidden" name="res_guest_phone" id="res_guest_phone">
+    <input type="hidden" name="res_cash_money" id="res_cash_money" value='0'>
+    <input type="hidden" name="res_card_money" id="res_card_money" value='0'>
+    <input type="hidden" name="res_bank_money" id="res_bank_money" value='0'>
+    <input type="hidden" name="res_misu_money" id="res_misu_money" value='0'>
+    <input type="hidden" name="res_night" id="res_night" value='1'>
+    <input type="hidden" name="res_or_book" id="res_or_book" />
+    <input type="submit" style="visibility:hidden" value="res">
+</form>
+<form id="bookForm" method="POST" action="{% url 'ohyeah:book_add' %}">
+    {% csrf_token %}
+    <input type="hidden" name="book_name" id="book_name">
+    <input type="hidden" name="book_room_number" id="book_room_number">
+    <input type="hidden" name="book_money" id="book_money">
+    <input type="hidden" name="book_person" id="book_person">
+    <input type="hidden" name="book_type" id="book_type">
+    <input type="hidden" name="book_ota" id="book_ota">
+    <input type="hidden" name="book_company" id="book_company">
+    <input type="hidden" name="book_payment_info" id="book_payment_info">
+    <input type="hidden" name="book_guest_info" id="book_guest_info" value="none">
+    <input type="hidden" name="book_chkin" id="book_chkin_date">
+    <input type="hidden" name="book_chkout" id="book_chkout_date">
+    <input type="hidden" name="book_chk_time" id="book_chk_time">
+    <input type="hidden" name="book_guest_type" id="book_guest_type">
+    <input type="hidden" name="book_guest_phone" id="book_guest_phone">
+    <input type="hidden" name="book_cash_money" id="book_cash_money" value='0'>
+    <input type="hidden" name="book_card_money" id="book_card_money" value='0'>
+    <input type="hidden" name="book_bank_money" id="book_bank_money" value='0'>
+    <input type="hidden" name="book_misu_money" id="book_misu_money" value='0'>
+    <input type="hidden" name="res_or_book" id="res_or_book" />
+    <input type="hidden" name="book_night" id="book_night" value="1">
+    <input type="submit" style="visibility:hidden" value="book">
+</form>
+<form id="searchForm" method="GET">
+    <input type="hidden" name="res_date" id="res_date">
+    <input type="submit" style="visibility:hidden" value="search">
+</form>
+
+{%endblock%}
+{%block script%}
+<script>
+    startDate = document.getElementById('startDate')
+    endDate = document.getElementById('endDate')
+    resSearchDate = document.getElementById('reserveDate')
+    reservationLink = document.getElementById('reservationLink')
+    resForm = document.getElementById('resForm')
+    let bookLink
+    
+    res_night= document.getElementById('res_night')
+    book_night= document.getElementById('book_night')
+    res_room_number,res_name, res_money, res_person, res_type, res_ota, res_company,res_payment_info,res_guest_info,res_chkin_date,res_chkout_date,res_chk_time,res_guest_phone,res_guest_type
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+    totalRoomMoney = 0
+    cashRoomMoney = 0
+    cardRoomMoney = 0
+    bankRoomMoney = 0
+    misuRoomMoney = 0
+    inputMoney = 0
+    online_money = 0
+
+    
+    function chkResType(){
+        if (!res_type){
+            alert('대실 / 숙박 체크해주세요')
+            return false
+        }   
+        if (!res_ota){
+            alert('유입방법 체크해주세요')
+            return false
+        }   
+        if (!res_guest_type){
+            alert('고객유형 체크해주세요')
+            return false
+        }   
+        if(res_ota == 'notChoice'){
+            alert('유입방법 체크해주세요')
+            return false
+        }
+        if(res_guest_type == 'notChoice'){
+            alert('고객유형 체크해주세요')
+            return false
+        }
+        if(res_type == 'notChoice'){
+            alert('대실 / 숙박 체크해주세요')
+            return false
+        }
+        return true
+        
+    }
+
+    function resSubmit(roomNumber){
+        res_room_number = roomNumber
+        console.log(res_room_number)
+        document.getElementById('res_room_number').value = res_room_number
+        document.getElementById('res_or_book').value='res'
+        _result = chkResType()
+        if(!_result){
+            return false
+        }
+        document.getElementById('resForm').submit()
+    }
+    function bookSubmit(roomNumber){
+        res_room_number = roomNumber
+        console.log(res_room_number)
+        document.getElementById('book_room_number').value = res_room_number
+        document.getElementById('res_or_book').value='book'
+        _result = chkResType()
+        if(!_result){
+            return false
+        }
+        document.getElementById('bookForm').submit()
+    }
+    
+    function chkNights(){
+        days = (Date.parse(res_chkout_date)-Date.parse(res_chkin_date)) / 86400000
+        if (!isNaN(days)){
+            document.querySelectorAll('#nights').forEach(item=>{item.innerText=days})
+            res_night.value = days
+            book_night.value = days
+        }
+    }
+
+
+
+    document.querySelectorAll('#online_type').forEach(item => {
+        item.addEventListener('change', event => {
+            let is_checked = event.target.checked
+            online_money = 0
+            console.log(is_checked)
+            if (is_checked == false){
+                // 입금가
+                document.querySelectorAll('#online').forEach(item=>{
+                    if(item.value != ''){
+                        console.log(item.value)
+                        online_money = parseInt(item.value.replace(',',''))
+                        
+                        online_money = Math.floor(online_money / 0.87)
+                        item.value= online_money
+                        document.querySelectorAll('#total').forEach(_item=>{
+                            _item.value= online_money
+                            totalRoomMoney = online_money
+                        })
+                    }
+                })
+            }else {
+                // 판매가
+                document.querySelectorAll('#online').forEach(item=>{
+                    if(item.value != ''){
+                        console.log(item.value)
+                        online_money = parseInt(item.value.replace(',',''))   
+                        document.querySelectorAll('#total').forEach( _item=>{
+                            _item.value= online_money
+                            totalRoomMoney = online_money
+                        })
+                    }
+               })
+            }
+            document.getElementById('res_money').value = online_money
+            document.getElementById('book_money').value = online_money
+        })
+    })
+
+    document.querySelectorAll('#startDate').forEach(item => {
+        item.addEventListener('change', event => {
+            let startDateVal = event.target.value
+            document.getElementById('startDateSelected').innerText = startDateVal
+            res_chkin_date = startDateVal
+            document.getElementById('res_chkin_date').value = res_chkin_date
+            document.getElementById('book_chkin_date').value = res_chkin_date
+            chkNights()
+        })
+    })
+
+    document.querySelectorAll('#endDate').forEach(item => {
+        item.addEventListener('change', event => {
+            let endDateVal = event.target.value
+            document.getElementById('endDateSelected').innerText = endDateVal
+            res_chkout_date = endDateVal
+            document.getElementById('res_chkout_date').value = res_chkout_date
+            document.getElementById('book_chkout_date').value = res_chkout_date
+            chkNights()
+        })
+    })
+    
+    reserveDate.addEventListener('change',(e)=>{
+        let reserveDateVal = event.target.value
+        console.log(reserveDateVal)
+        document.getElementById('reserveDate').innerText = reserveDateVal
+    })
+    
+    document.querySelectorAll('#persons').forEach(item => {
+        item.addEventListener('change', event => {
+            res_person = event.target.value
+            console.log(res_person)
+            document.getElementById('res_person').value = res_person
+            document.getElementById('book_person').value = res_person
+        })
+    })
+    
+    document.querySelectorAll('#guest_info').forEach(item => {
+        item.addEventListener('change', event => {
+            res_guest_info = event.target.value
+            console.log(res_guest_info)
+            document.getElementById('res_guest_info').value = res_guest_info
+            document.getElementById('book_guest_info').value = res_guest_info
+        })
+    })
+
+    document.querySelectorAll('#companyName').forEach(item => {
+        item.addEventListener('change', event => {
+            res_company = event.target.value
+            console.log(res_company)
+            document.getElementById('res_company').value = res_company
+            document.getElementById('book_company').value = res_company
+        })
+    })
+    
+    document.querySelectorAll('#guestphone').forEach(item => {
+        item.addEventListener('change', event => {
+            res_guest_phone = event.target.value
+            console.log(res_guest_phone)
+            document.getElementById('res_guest_phone').value = res_guest_phone
+            document.getElementById('book_guest_phone').value = res_guest_phone
+        })
+    })
+    
+    document.querySelectorAll('#guestType').forEach(item => {
+        item.addEventListener('change', event => {
+            res_guest_type = event.target.value
+            console.log(res_guest_type)
+            document.getElementById('res_guest_type').value = res_guest_type
+            document.getElementById('book_guest_type').value = res_guest_type
+        })
+    })
+
+    document.querySelectorAll('#comming').forEach(item => {
+        item.addEventListener('change', event => {
+            res_ota = event.target.value
+            console.log(res_ota)
+            document.getElementById('res_ota').value = res_ota
+            document.getElementById('book_ota').value = res_ota
+        })
+    })
+    
+    document.querySelectorAll('#checkinTime').forEach(item => {
+        item.addEventListener('change', event => {
+            res_chk_time = event.target.value
+            console.log(res_chk_time)
+            document.getElementById('res_chk_time').value = res_chk_time
+            document.getElementById('book_chk_time').value = res_chk_time
+        })
+    })
+
+    document.querySelectorAll('#rentType').forEach(item => {
+        item.addEventListener('change', event => {
+            res_type = event.target.value
+            console.log(res_type)
+            document.getElementById('res_type').value = res_type
+            document.getElementById('book_type').value = res_type
+        })
+    })
+
+    document.querySelectorAll('#guestName').forEach(item => {
+        item.addEventListener('change', event => {
+            res_name = event.target.value
+            console.log(res_name)
+            document.getElementById('res_name').value = res_name
+            document.getElementById('book_name').value = res_name
+        })
+    })
+
+    resSearchDate.addEventListener('change',event=>{
+        console.log(event.srcElement.value)
+        document.getElementById('res_date').value = event.srcElement.value
+        document.getElementById('searchForm').submit()
+    })
+
+    document.querySelectorAll('#total').forEach(item => {
+        item.addEventListener('change', event => {
+            totalRoomMoney = event.target.value
+            event.srcElement.value = parseInt(totalRoomMoney).toLocaleString('en')
+            document.getElementById('res_money').value = totalRoomMoney
+            document.getElementById('book_money').value = totalRoomMoney
+        })
+    })
+    
+    document.querySelectorAll('.inputMoney').forEach(item => {
+        item.addEventListener('change', event => {
+            test = event
+            _result = 0
+            if(event.srcElement.id == 'cash'){
+                cashRoomMoney = event.target.value
+                document.getElementById('res_cash_money').value = cashRoomMoney
+                document.getElementById('book_cash_money').value = cashRoomMoney
+                _result = event.target.value
+            }else if(event.srcElement.id == 'card'){
+                cardRoomMoney = event.target.value
+                document.getElementById('res_card_money').value = cardRoomMoney
+                document.getElementById('book_card_money').value = cardRoomMoney
+                _result = event.target.value
+            }else if(event.srcElement.id == 'bank'){
+                bankRoomMoney = event.target.value
+                document.getElementById('res_bank_money').value = bankRoomMoney
+                document.getElementById('book_bank_money').value = bankRoomMoney
+                _result = event.target.value
+            }else if(event.srcElement.id == 'misu'){
+                misuRoomMoney = event.target.value
+                document.getElementById('res_misu_money').value = misuRoomMoney
+                document.getElementById('book_misu_money').value = misuRoomMoney
+                _result = event.target.value
+            }else {
+                online_money = event.target.value
+                _result = online_money
+                
+                document.getElementById('res_money').value = online_money
+                document.getElementById('book_money').value = online_money
+                
+                document.querySelectorAll('#total').forEach( _item=>{
+                    _item.value= _result
+                    console.log(online_money)
+                    totalRoomMoney = _result
+                })
+            }
+            
+            inputMoney = inputMoney + parseInt(_result)
+            event.srcElement.value = parseInt(event.target.value).toLocaleString('en')
+            result = totalRoomMoney - inputMoney
+            chkMoney(result)
+            
+        })
+    })
+
+    function chkMoney(_result){
+        document.querySelectorAll('#resultMoney').forEach(item => {
+            if(_result == 0){
+                item.innerHTML  = "부족한 금액이 없습니다."
+                item.style.color = "blue"    
+            }else if(_result < 0){
+                item.innerHTML  = Math.abs(_result) + '원의 금액이 많습니다.'
+                item.style.color = "red"    
+            }else {
+                item.innerHTML  = _result + '원의 금액이 부족합니다.'
+                item.style.color = "red"    
+            }
+        })   
+    }
+
+    window.addEventListener('DOMContentLoaded', function(){
+		//console.log('window addEventListener DOMContentLoaded');
+        bookLinkRent = document.getElementsByClassName('bookLinkRent')
+        bookLinkStay = document.getElementsByClassName('bookLinkStay')
+        bookLinkOut = document.getElementsByClassName('bookLinkOut')
+        for(i=0;i<bookLinkRent.length;i++) {
+            console.log(bookLinkRent[i].id)
+            document.getElementById('room_rec_'+bookLinkRent[i].id).style.backgroundColor="#6ef19c"  
+        }
+        for(i=0;i<bookLinkStay.length;i++) {
+            console.log(bookLinkStay[i].id)
+            document.getElementById('room_rec_'+bookLinkStay[i].id).style.backgroundColor="#eba1a1"  
+        }
+        for(i=0;i<bookLinkOut.length;i++) {
+            console.log(bookLinkOut[i].id)
+            document.getElementById('room_rec_'+bookLinkOut[i].id).style.backgroundColor="#adb5bd"  
+        }
+	});
+</script>
+{%endblock%}
