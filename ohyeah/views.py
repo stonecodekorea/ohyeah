@@ -6,6 +6,8 @@ from django.utils.dateformat import DateFormat
 from django.db.models import Q, Sum, Count
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+import requests, json
+from bs4 import BeautifulSoup
 
 from .forms import RoomForm, ReservationForm, BookForm
 from .models import EventHistory, Room, Reservation, Booking
@@ -457,5 +459,6 @@ def event_add(event_obj):
     event_history.save()
     return True
         
+def login_yanolja(request):
     
-        
+    return render(request, 'ohyeah/yanolja_test.html')

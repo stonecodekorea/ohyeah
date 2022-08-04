@@ -22,4 +22,5 @@ urlpatterns = [
     path('event_list/', views.event_list, name='event_list'),
     path('daily_report/', views.daily_report, name='daily_report'),
     path('month_report/', views.month_report, name='month_report'),
+    path('yanolja_test/', views.login_yanolja, name='yanolja_test'),
 ]

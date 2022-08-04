@@ -7,17 +7,17 @@
     src: url('/static/font/PyeongChangPeace-Bold.woff') format('woff');
 }
 .room_rec{
-    min-width:7%;
-    min-height:115px;
-    max-width: 7%;
-    max-height: 115px;
+    min-width:7.5%;
+    min-height:130px;
+    max-width: 7.5%;
+    max-height: 130px;
     display:inline-block;
     box-shadow: 1px 1px 1px 1px grey;
 }
 .room_rec_hidden{
-    min-width:7%;
+    min-width:7.5%;
     min-height:115px;
-    max-width: 7%;
+    max-width: 7.5%;
     max-height: 115px;
     display:inline-block;
     visibility: hidden;
@@ -144,4 +144,15 @@ body{
     width: 900px; 
     height: 500px;
     display: inline-block;
+}
+.btn{
+    --bs-btn-padding-x: 0.35rem !important;
+    --bs-btn-padding-y: 0.35rem !important;
+}
+.chkBtn{
+    background-color:#b9b8b8;
+    border-radius: 11px;
+    border: none;
+    cursor: default !important;
+
 }
