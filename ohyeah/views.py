@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import requests, json
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
 from .forms import RoomForm, ReservationForm, BookForm
@@ -464,5 +465,14 @@ def login_yanolja(request):
     driver = webdriver.Chrome(ChromeDriverManager().install())
     login_url = 'https://account.yanolja.biz/?serviceType=PC&redirectURL=%2F&returnURL=https%3A%2F%2Fpartner.yanolja.com%2Fauth%2Flogin'
     driver.get(login_url)
-    
-    return render(request, 'ohyeah/yanolja_test.html')
+    driver.find_element(By.XPATH,'//*[@id="input-28"]').send_keys('0319973230')
+    driver.find_element(By.XPATH,'//*[@id="input-34"]').send_keys('#assem3070')
+    driver.find_element(By.XPATH,'//*[@id="app"]/div/div[1]/div/a/span').click()
+    driver.implicitly_wait(10) # seconds
+    driver.find_element(By.XPATH,'//*[@id="app"]/div[1]/aside/div[1]/div[1]/div[3]/div/div[2]/div').click()
+    driver.find_element(By.XPATH,'//*[@id="app"]/div[1]/aside/div[1]/div[1]/div[3]/div[2]/a/div[2]/div').click()
+    driver.implicitly_wait(10) # seconds
+    result_xpath = driver.find_element(By.XPATH,'//*[@id="app"]/div[1]/div[1]/div/main/div/div/div/div[5]/div[2]/div')
+    result = result_xpath.text
+    context = {'result':result}
+    return render(request, 'ohyeah/yanolja_test.html', context)
