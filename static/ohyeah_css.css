@@ -6,6 +6,19 @@
     font-family: 'PyeongChangPeace-Bold';
     src: url('/static/font/PyeongChangPeace-Bold.woff') format('woff');
 }
+@font-face {
+    font-family: 'Pretendard-Thin';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Thin.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+}
+.card{
+    border-radius: 0 !important;
+}
+.bookedBtn{
+    pointer-events: none; /*이벤트를 막음*/
+    cursor: default; /*마우스 커서를 포인트에서 디폴트로 변경*/
+}
 .room_rec{
     min-width:7.5%;
     min-height:130px;
@@ -51,7 +64,7 @@
 .ohyeah-status{
     padding: 10px;
     padding-left: 20px;
-    background-color: #d8d7d9;
+    background-color: #f0f3fa;
 }
 .ohyeah-nav{
     height: 120px;
@@ -63,11 +76,20 @@
 }
 .ohyeah-book-link{
     display: block;
-    font-size: 0.8em;
-    font-weight: bold;   
+    font-size: 0.7em;
+    color: black; 
+    text-align: center;
+    font-weight: bold;
 }
+.ohyeah-book-link-stay{
+    color: #cf0606;
+}
+.ohyeah-book-link-rent{
+    color: #6ef19c;
+}
+
 .bookLinkStay{
-    font-family: 'PyeongChangPeace-Light';
+    font-family: 'Pretendard-Thin' !important;
 }
 .navbar-brand{
     color:white !important;
@@ -82,7 +104,7 @@
     font-weight: bold !important;
 }
 body{
-    font-family: 'PyeongChangPeace-Light' !important;
+    font-family: 'Pretendard-Thin' !important;
     margin: 0;
 }
 .modify-number{

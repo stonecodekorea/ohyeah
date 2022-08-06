@@ -1,5 +1,6 @@
 {% extends 'base.html'%}
 {% load ohyeah_filter %}
+{% load humanize%}
 {%block content%}
 {%include 'navbar.html' %}
 {% with status_date|convert_str_date as status %}       
@@ -106,9 +107,8 @@
                         <div class="card room_rec justify-content-center" id="room_rec_{{r.room_number}}">
                             <div class="card-body"> 
                                 <div class="card-title">
-                                    <button class="btn btn-default room-rec-btn" data-bs-toggle="modal" data-bs-target="#testModal" data-bs-roomnumber="{{r.room_number}}" id="testModalBtn"><p class="res-room-btn-text">{{r.room_number}} 입실</p></button>    
-                                    <button class="btn chkBtn"></button>
-                                    <button class="btn chkBtn"></button>
+                                    <button class="btn btn-default room-rec-btn" data-bs-toggle="modal" data-bs-target="#testModal" data-bs-roomnumber="{{r.room_number}}" id="testModalBtn"><p class="res-room-btn-text">{{r.room_number}} 입실 </p></button>
+                                    <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="ohyeah-btn-tooltip" data-bs-title="객실 이슈 메모"><i class="bi bi-chat-dots"></i></a>
                                 </div>
                                     
                                 <div class="card-subtitle">
@@ -144,27 +144,78 @@
                                             {%if status >= book.book_chkin and status <= book.book_chkout%}
                                                 {% if book.book_room_number == r.room_number%}
                                                         {% if book.book_type == "rent" and book.book_status == "on" %}
-                                                            <div class="">
+                                                            <div class="bookedRoom">
                                                                 <a class="bookLinkRent" id="{{book.book_room_number}}" href="{% url 'ohyeah:book_status' book.id %}" onclick="window.open(this.href,'대실 상세내역','width=800,height=900');return false;">
-                                                                    <span class="ohyeah-book-link">{{book.book_name}}</span>
+                                                                    {% if book.book_ota == "yanolja"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-rent">야놀자 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "hotelstory"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-rent">호텔스토리 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "calling"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-rent">유선 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "walkin"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-rent">워크인 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "kiosk"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-rent">무인기 : {{book.book_name}}</span>
+                                                                    {%endif%}
+                                                                    
+                                                                    <span class="ohyeah-book-link">{{book.book_chkin|date:'m-d'}} ~ {{book.book_chkout|date:'m-d'}}</span>
+                                                                    <span class="ohyeah-book-link">{{book.book_money|intcomma}}</span>
                                                                 </a>
                                                             </div>
                                                         {% elif book.book_type == "stay" and book.book_status == "on" and status < book.book_chkout %}
-                                                            <div class="">
+                                                            <div class="bookedRoom">
                                                                 <a class="bookLinkStay" id="{{book.book_room_number}}" href="{% url 'ohyeah:book_status' book.id %}" onclick="window.open(this.href,'숙박 상세내역','width=800,height=900');return false;">
-                                                                    <span class="ohyeah-book-link">{{book.book_name}}</span>
+                                                                    <span class="ohyeah-book-link ">{{book.book_chkout|date:'m-d'}} 12시 C/O 예정</span>
+                                                                    {% if book.book_ota == "yanolja"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-stay">야놀자 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "hotelstory"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-stay">호텔스토리 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "calling"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-stay">유선 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "walkin"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-stay">워크인 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "kiosk"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-stay">무인기 : {{book.book_name}}</span>
+                                                                    {%endif%}
+                                                                    <span class="ohyeah-book-link">{{book.book_chkin|date:'m-d'}} ~ {{book.book_chkout|date:'m-d'}}</span>
+                                                                    <span class="ohyeah-book-link">{{book.book_money|intcomma}}</span>
                                                                 </a>
                                                             </div>
                                                         {% elif book.book_type == "stay" and book.book_status == "off" and status < book.book_chkout %}
-                                                            <div class="">
+                                                            <div class="bookedRoom">
                                                                 <a class="bookLinkOut" id="{{book.book_room_number}}" href="{% url 'ohyeah:book_status' book.id %}" onclick="window.open(this.href,'숙박 상세내역','width=800,height=900');return false;">
-                                                                    <span class="ohyeah-book-link">{{book.book_name}}</span>
+                                                                    <span class="ohyeah-book-link">{{book.book_chkout|date:'m-d'}} 12시 C/O 예정</span>
+                                                                    {% if book.book_ota == "yanolja"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-stay">야놀자 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "hotelstory"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-stay">호텔스토리 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "calling"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-stay">유선 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "walkin"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-stay">워크인 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "kiosk"%}
+                                                                    <span class="ohyeah-book-link ohyeah-book-link-stay">무인기 : {{book.book_name}}</span>
+                                                                    {%endif%}
+                                                                    <span class="ohyeah-book-link">{{book.book_chkin|date:'m-d'}} ~ {{book.book_chkout|date:'m-d'}}</span>
+                                                                    <span class="ohyeah-book-link">{{book.book_money|intcomma}}</span>
                                                                 </a>
                                                             </div>
                                                         {% elif book.book_status == "off" %}
-                                                            <div class="">
+                                                            <div class="bookedRoom">
                                                                 <a class="bookLinkOut" id="{{book.book_room_number}}" href="{% url 'ohyeah:book_status' book.id %}" onclick="window.open(this.href,'숙박 상세내역','width=800,height=900');return false;">
-                                                                    <span class="ohyeah-book-link">{{book.book_name}}</span>
+                                                                    {% if book.book_ota == "yanolja"%}
+                                                                    <span class="ohyeah-book-link">야놀자 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "hotelstory"%}
+                                                                    <span class="ohyeah-book-link">호텔스토리 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "calling"%}
+                                                                    <span class="ohyeah-book-link">유선 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "walkin"%}
+                                                                    <span class="ohyeah-book-link">워크인 : {{book.book_name}}</span>
+                                                                    {% elif book.book_ota == "kiosk"%}
+                                                                    <span class="ohyeah-book-link">무인기 : {{book.book_name}}</span>
+                                                                    {%endif%}
+                                                                    <span class="ohyeah-book-link">{{book.book_chkin|date:'m-d'}} ~ {{book.book_chkout|date:'m-d'}}</span>
+                                                                    <span class="ohyeah-book-link">{{book.book_money|intcomma}}</span>
                                                                 </a>
                                                             </div>
                                                         {%else%}
@@ -784,16 +835,27 @@
         bookLinkOut = document.getElementsByClassName('bookLinkOut')
         for(i=0;i<bookLinkRent.length;i++) {
             console.log(bookLinkRent[i].id)
-            document.getElementById('room_rec_'+bookLinkRent[i].id).style.backgroundColor="#6ef19c"  
+            document.getElementById('room_rec_'+bookLinkRent[i].id).style.borderColor="#6ef19c"  
+            document.getElementById('room_rec_'+bookLinkRent[i].id).style.color="#6ef19c"  
+            $('.bookedRoom').parents('div.card-subtitle').siblings('.card-title').children('.room-rec-btn').css('color','#6ef19c')
+            // parents 부모요소찾기/ siblings 형제요소 찾기/ children 자식요소 찾기
+            $('.bookedRoom').parents('div.card-subtitle').siblings('.card-title').children('.room-rec-btn').addClass('bookedBtn')
         }
         for(i=0;i<bookLinkStay.length;i++) {
             console.log(bookLinkStay[i].id)
-            document.getElementById('room_rec_'+bookLinkStay[i].id).style.backgroundColor="#eba1a1"  
+            document.getElementById('room_rec_'+bookLinkStay[i].id).style.borderColor="#eba1a1"  
+            
+            document.getElementById('room_rec_'+bookLinkStay[i].id).style.backgroundColor="#ed969f87"  
+            
+            $('.bookedRoom').parents('div.card-subtitle').siblings('.card-title').children('.room-rec-btn').css('color','#cf0606')
+            $('.bookedRoom').parents('div.card-subtitle').siblings('.card-title').children('.room-rec-btn').addClass('bookedBtn')
         }
         for(i=0;i<bookLinkOut.length;i++) {
             console.log(bookLinkOut[i].id)
             document.getElementById('room_rec_'+bookLinkOut[i].id).style.backgroundColor="#adb5bd"  
         }
 	});
+
+    $('.bookedRoom').parents('div.card-subtitle').siblings('.card-title').children('.room-rec-btn')
 </script>
 {%endblock%}

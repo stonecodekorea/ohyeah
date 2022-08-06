@@ -106,8 +106,14 @@
                 </table>
                 <div>
                     <a class="btn btn-primary" href="{% url 'ohyeah:book_modify' book.id%}">입실 수정</a>
+                    {%if book.book_status != "off"%}
                     <a class="btn btn-secondary" href="{% url 'ohyeah:book_out' book.id status_date%}">퇴실</a>
+                    {%endif%}
+                    {% if book.book_status != "off"%}
+
+                    {% else %}
                     <a class="btn btn-secondary" href="{% url 'ohyeah:book_clean_done' book.id status_date%}">청소완료</a>
+                    {% endif %}
                     <a class="btn btn-danger" href="{% url 'ohyeah:book_delete' book.id%}" onclick="closeWindowReload()">입실 삭제/취소</a>
                 </div>
             </div>
