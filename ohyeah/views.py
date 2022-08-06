@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import requests, json
 from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
 
 from .forms import RoomForm, ReservationForm, BookForm
 from .models import EventHistory, Room, Reservation, Booking
@@ -460,8 +461,8 @@ def event_add(event_obj):
     return True
         
 def login_yanolja(request):
-    driver = webdriver.Chrome()
-    url = 'https://www.google.com'
-    driver.get(url)
-    context = {'result':result}
-    return render(request, 'ohyeah/yanolja_test.html', context)
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    login_url = 'https://account.yanolja.biz/?serviceType=PC&redirectURL=%2F&returnURL=https%3A%2F%2Fpartner.yanolja.com%2Fauth%2Flogin'
+    driver.get(login_url)
+    
+    return render(request, 'ohyeah/yanolja_test.html')
