@@ -1,6 +1,8 @@
 from dataclasses import fields
 from django import forms
 from .models import EventHistory, Room, TotalRoomFloor, Reservation, Booking
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 class RoomForm(forms.ModelForm):
     class Meta:

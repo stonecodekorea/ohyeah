@@ -11,6 +11,11 @@
           <li class="nav-item">
             <a class="nav-link ohyeah-nav-link" href="{% url 'common:logout' %}">로그아웃</a>
           </li>
+            {%if user.is_superuser%}
+          <li class="nav-item">
+            <a class="nav-link ohyeah-nav-link" href="{% url 'common:signup' %}">회원생성</a>
+          </li>
+            {% endif %}
           {% endif %}
           <li class="nav-item">
             <a class="nav-link active ohyeah-nav-link" aria-current="page" href="{% url 'ohyeah:index' %}">객실현황</a>

@@ -1,1 +1,8 @@
-{{result}}
+{{headers}}<br><br>
+
+{{res.text}}
+
+<form method="POST">
+    {%csrf_token%}
+    <input type="hidden" name="head" id="head" value="{{headers}}">
+</form>
