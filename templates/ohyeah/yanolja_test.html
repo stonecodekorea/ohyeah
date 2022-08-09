@@ -1,6 +1,16 @@
 {{headers}}<br><br>
 
-{{res.text}}
+{% for rname in res_name %}
+    {{rname}}
+{% endfor %}
+
+{% for rroom in res_room_type %}
+    {{rroom}}
+{% endfor %}
+
+{% for rchk in res_chk_data %}
+    {{rchk}}
+{% endfor %}
 
 <form method="POST">
     {%csrf_token%}

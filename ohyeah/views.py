@@ -6,10 +6,11 @@ from django.utils.dateformat import DateFormat
 from django.db.models import Q, Sum, Count
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-import requests, json
+import requests, json, pickle
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
+from bs4 import BeautifulSoup
 
 from .forms import RoomForm, ReservationForm, BookForm
 from .models import EventHistory, Room, Reservation, Booking
@@ -463,7 +464,7 @@ def event_add(event_obj):
     event_history.save()
     return True
         
-def login_yanolja(request):
+def yanolja_selenium():
     driver = webdriver.Chrome(ChromeDriverManager().install())
     login_url = 'https://account.yanolja.biz/?serviceType=PC&redirectURL=%2F&returnURL=https%3A%2F%2Fpartner.yanolja.com%2Fauth%2Flogin'
     driver.get(login_url)
@@ -476,13 +477,67 @@ def login_yanolja(request):
     #driver.find_element(By.XPATH,'//*[@id="app"]/div[1]/aside/div[1]/div[1]/div[3]/div[2]/a/div[2]/div').click()
     #driver.implicitly_wait(10) # seconds
     #result_xpath = driver.find_element(By.XPATH,'//*[@id="app"]/div[1]/div[1]/div/main/div/div/div/div[5]/div[2]/div')
-    #result = result_xpath.text
-    
+    #result = result_xpath.text        
     for request2 in driver.requests:
         headers = request2.headers    
-    test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-09&endDate=2022-08-09&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-09&searchType=detail&useTypeDetail=ALL&useTypeCheckIn=ALL'    
-    res = requests.get(test_url, headers=headers)
     
-    context = { 'headers':headers,'res':res}
+    return headers
+        
+def login_yanolja(request):
+    headers = ""
+    with open('yanolja_header.json', "r") as json_file:
+        json_data = json.load(json_file)
+        headers = json_data
+        
+    current_date = DateFormat(datetime.now()).format('Y-m-d')
+    
+    login_msg_str = '로그인 하러 가기'
+    test_url = 'https://partner.yanolja.com/reservation/search'    
+    date_str = '?dateType=RESERVATION_DATE'
+    #start_date = '&startDate='+str(current_date)
+    #end_date = '&endDate='+str(current_date)
+    start_date = '&startDate=2202-08-09'
+    end_date = '&endDate=2202-08-09'
+    res_status_str = '&reservationStatus=ALL'
+    keyword_type = '&keywordType=VISITOR_NAME&page=1&size=50'
+    sort_str = '&sort=checkInDate,desc'
+    #selectdate_str = '&selectedDate='+str(current_date)
+    selectdate_str = '&selectedDate=2202-08-09'
+    search_type = '&searchType=detail&useTypeDetail=ALL'
+    use_type = '&useTypeCheckIn=STAY'
+    #test_url = test_url + date_str+start_date+end_date+res_status_str+keyword_type+sort_str+selectdate_str+search_type+use_type
+    test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-09&endDate=2022-08-09&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-09&searchType=detail&useTypeDetail=ALL&useTypeCheckIn=STAY'
+    res = requests.get(test_url, headers=json_data)
+    
+    chk_login = res.text.find(login_msg_str)
+    if chk_login < 0 :
+        # 로그인 상태가 안됨
+        headers = yanolja_selenium()         
+    
+    head = {'host':headers['host'], 'Connection':headers['Connection'], 'sec-ch-ua':headers['sec-ch-ua'], 'sec-ch-ua-mobile':headers['sec-ch-ua-mobile'],
+            'User-Agent':headers['User-Agent'], 'sec-ch-ua-platform':headers['sec-ch-ua-platform'], 'Accept':headers['Accept'], 'Sec-Fetch-Site':headers['Sec-Fetch-Site'], 
+            'Sec-Fetch-Mode':headers['Sec-Fetch-Mode'], 'Sec-Fetch-Dest':headers['Sec-Fetch-Dest'],'Referer':headers['Referer'], 'Accept-Encoding':headers['Accept-Encoding'],
+            'Accept-Language':headers['Accept-Language'], 'Cookie':headers['Cookie']}
+
+    with open('yanolja_header.json', 'w') as outfile:
+        json.dump(head, outfile)
+    
+    with open('yanolja_header.json', "r") as json_file:
+        json_data = json.load(json_file)
+    res = requests.get(test_url, headers=json_data)
+    
+    # 예약현황 추출하기
+    res_data = 0
+    html = BeautifulSoup(res.text, 'html.parser')
+    infos = html.select('tr.ReservationSearchListItem')
+    res_name = []
+    res_room_type = []
+    res_chk_data = []
+    
+    for i in range(len(infos)) :
+        res_name.append(infos[i].select_one('td.ReservationSearchListItem__visitor'))
+        res_room_type.append(infos[i].select_one('div.body-2'))
+        res_chk_data.append(infos[i].select_one('td.ReservationSearchListItem__date'))
+    context = { 'headers':headers,'res':res, 'res_name':res_name, 'res_room_type':res_room_type, 'res_chk_data':res_chk_data}
     return render(request, 'ohyeah/yanolja_test.html', context)
 
