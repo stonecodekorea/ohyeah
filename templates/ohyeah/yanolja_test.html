@@ -1,18 +1,27 @@
-{{headers}}<br><br>
+{%extends 'base.html'%}
+{%include 'navbar.html'%}
+{%block content%}
+<table class="table table-hover">
+    {%for temp in pat_chk %}
+        {{temp}}
+    {%endfor%}
+{%for data in res_data%}
+    <tbody>
+        <tr>
+            <td>{{data.name}}</td>
+            <td>{{data.phone}}</td>
+            <td>{{data.room}}</td>
+            <td>{{data.chk}}</td>
+        </tr>
+    </tbody>
+{%endfor%}
 
-{% for rname in res_name %}
-    {{rname}}
-{% endfor %}
-
-{% for rroom in res_room_type %}
-    {{rroom}}
-{% endfor %}
-
-{% for rchk in res_chk_data %}
-    {{rchk}}
-{% endfor %}
-
+{%for r in res_name%}
+    {{r}}
+{%endfor%}
+</table>
 <form method="POST">
     {%csrf_token%}
     <input type="hidden" name="head" id="head" value="{{headers}}">
 </form>
+{%endblock%}

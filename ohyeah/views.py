@@ -6,11 +6,12 @@ from django.utils.dateformat import DateFormat
 from django.db.models import Q, Sum, Count
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-import requests, json, pickle
+import requests, json, pickle, re
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
+
 
 from .forms import RoomForm, ReservationForm, BookForm
 from .models import EventHistory, Room, Reservation, Booking
@@ -533,11 +534,46 @@ def login_yanolja(request):
     res_name = []
     res_room_type = []
     res_chk_data = []
+    temp = {}
+    res_data = []
+    temp_name = ''
+    temp_phone = ''
+    t_chkin = ''
+    t_chkout = ''
+    
+    p = re.compile('([가-힣]+)([0-9]+)')
+    p_chkinout = re.compile('([0-9\.]+\s\([가-힣]\)\s[0-9]*:00)')
+    f = open('.test.txt','w')
     
     for i in range(len(infos)) :
-        res_name.append(infos[i].select_one('td.ReservationSearchListItem__visitor'))
-        res_room_type.append(infos[i].select_one('div.body-2'))
-        res_chk_data.append(infos[i].select_one('td.ReservationSearchListItem__date'))
-    context = { 'headers':headers,'res':res, 'res_name':res_name, 'res_room_type':res_room_type, 'res_chk_data':res_chk_data}
+        test = infos[i].select_one('td.ReservationSearchListItem__visitor').text
+        test2 = infos[i].select_one('td.ReservationSearchListItem__date').text
+        f.write(test2)
+        test = test.replace('\n','')
+        test = test.replace(' ','')
+        
+        pat_temp = p.findall(test)
+        pat_chk = p_chkinout.findall(test2)
+        for j in range(len(pat_temp)):
+            temp_name = pat_temp[j][0]
+            temp_phone = pat_temp[j][1]
+        #for j in range(len(pat_chk)):    
+        #t_chkin = pat_chk[0]
+        #t_chkout = pat_chk[1]
+            
+        temp['name'] =  temp_name
+        temp['phone'] = temp_phone
+        temp['room'] = infos[i].select_one('div.body-2').text
+        temp['chk'] = infos[i].select_one('td.ReservationSearchListItem__date').text
+        #temp['chkin'] = t_chkin
+        #temp['chkout'] = t_chkout
+        res_data.append(temp)
+        temp={}
+        res_name.append(infos[i].select_one('td.ReservationSearchListItem__visitor').text)
+        res_room_type.append(infos[i].select_one('div.body-2').text)
+        res_chk_data.append(infos[i].select_one('td.ReservationSearchListItem__date').text)
+        
+    f.close()
+    context = { 'headers':headers,'res':res, 'res_name':res_name, 'res_room_type':res_room_type, 'res_chk_data':res_chk_data, 'res_data':res_data, 'test2':test2, 'pat_chk':pat_chk}
     return render(request, 'ohyeah/yanolja_test.html', context)
 
