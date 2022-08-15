@@ -522,8 +522,6 @@ def login_yanolja(request):
     test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-15&endDate=2022-08-15&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-14&searchType=detail&useTypeDetail=ALL&useTypeCheckIn=ALL'
     res = requests.get(test_url, headers=headers)
     temp_test = res.text.encode('utf-8','ignore')
-    with open('test2.txt', 'wb') as temp_text :
-        temp_text.write(temp_test)
     
     p = re.compile('김포 HOTEL ASSEM')
     result = p.findall(res.text)
@@ -585,7 +583,7 @@ def login_yanolja(request):
             temp['name'] =  temp_name
             temp['phone'] = temp_phone
             temp['room'] = infos[i].select_one('div.body-2').text
-            
+            temp['res_number'] = infos[i].select_one('td.ReservationSearchListItem__no > span.ReservationSearchListItem__text').text
             t_c = p_c.findall(temp['name'])
             if t_c :
                 # 취소한 사람이 있을 때
