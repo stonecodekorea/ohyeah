@@ -518,8 +518,8 @@ def login_yanolja(request):
     #selectdate_str = '&selectedDate=2202-08-09'
     search_type = '&searchType=detail&useTypeDetail=ALL'
     use_type = '&useTypeCheckIn=STAY'
-    test_url = test_url + date_str+start_date+end_date+res_status_str+keyword_type+sort_str+selectdate_str+search_type+use_type
-    #test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-09&endDate=2022-08-09&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-09&searchType=detail&useTypeDetail=ALL&useTypeCheckIn=STAY'
+    #test_url = test_url + date_str+start_date+end_date+res_status_str+keyword_type+sort_str+selectdate_str+search_type+use_type
+    test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-09&endDate=2022-08-09&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-09&searchType=detail&useTypeDetail=STAY&useTypeCheckIn=STAY'
     res = requests.get(test_url, headers=headers)
     temp_test = res.text.encode('utf-8','ignore')
     with open('test2.txt', 'wb') as temp_text :
@@ -557,10 +557,11 @@ def login_yanolja(request):
         
         #headers = yanolja_selenium()
         headers = write_yanolja_headers(headers)
-        res = requests.get(test_url, headers=headers)    
+        res = requests.get(test_url, headers=headers)  
+        #f.write(res.text)  
         html = BeautifulSoup(res.text, 'html.parser')
         infos = html.select('tr.ReservationSearchListItem')
-
+    
         for i in range(len(infos)) :
             test = infos[i].select_one('td.ReservationSearchListItem__visitor').text
             test2 = infos[i].select_one('td.ReservationSearchListItem__date').text
@@ -598,6 +599,7 @@ def login_yanolja(request):
         test2 = []     
         pat_chk = []   
     f.close()
+    
     context = { 'headers':headers,'res':res, 'res_name':res_name, 'res_room_type':res_room_type, 'res_chk_data':res_chk_data, 'res_data':res_data, 'test2':test2, 'pat_chk':pat_chk}
     #context = {'res':res}
     return render(request, 'ohyeah/yanolja_test.html', context)
