@@ -484,49 +484,54 @@ def yanolja_selenium():
    
     return headers
        
-def login_yanolja(request):
-    headers = ""
-    with open('yanolja_header.json', "r") as json_file:
-        json_data = json.load(json_file)
-        headers = json_data
-       
-    current_date = DateFormat(datetime.now()).format('Y-m-d')
-   
-    login_msg_str = '현재 로그인하신 계정에 연결된 숙소가 없습니다'
-    test_url = 'https://partner.yanolja.com/reservation/search'    
-    date_str = '?dateType=RESERVATION_DATE'
-    #start_date = '&startDate='+str(current_date)
-    #end_date = '&endDate='+str(current_date)
-    start_date = '&startDate=2202-08-09'
-    end_date = '&endDate=2202-08-09'
-    res_status_str = '&reservationStatus=ALL'
-    keyword_type = '&keywordType=VISITOR_NAME&page=1&size=50'
-    sort_str = '&sort=checkInDate,desc'
-    #selectdate_str = '&selectedDate='+str(current_date)
-    selectdate_str = '&selectedDate=2202-08-09'
-    search_type = '&searchType=detail&useTypeDetail=ALL'
-    use_type = '&useTypeCheckIn=STAY'
-    #test_url = test_url + date_str+start_date+end_date+res_status_str+keyword_type+sort_str+selectdate_str+search_type+use_type
-    test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-09&endDate=2022-08-09&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-09&searchType=detail&useTypeDetail=ALL&useTypeCheckIn=STAY'
-    res = requests.get(test_url, headers=json_data)
-   
-    chk_login = res.text.find(login_msg_str)
-    if chk_login < 0 :
-        # 로그인 상태가 안됨
-        headers = yanolja_selenium()        
-   
+def write_yanolja_headers(headers):
     head = {'host':headers['host'], 'Connection':headers['Connection'], 'sec-ch-ua':headers['sec-ch-ua'], 'sec-ch-ua-mobile':headers['sec-ch-ua-mobile'],
             'User-Agent':headers['User-Agent'], 'sec-ch-ua-platform':headers['sec-ch-ua-platform'], 'Accept':headers['Accept'], 'Sec-Fetch-Site':headers['Sec-Fetch-Site'],
             'Sec-Fetch-Mode':headers['Sec-Fetch-Mode'], 'Sec-Fetch-Dest':headers['Sec-Fetch-Dest'],'Referer':headers['Referer'], 'Accept-Encoding':headers['Accept-Encoding'],
             'Accept-Language':headers['Accept-Language'], 'Cookie':headers['Cookie']}
-
     with open('yanolja_header.json', 'w') as outfile:
-        json.dump(head, outfile)
+        json.dump(head, outfile)               
+    return head
+       
+def login_yanolja(request):
+    headers = ""
+    try:
+        with open('yanolja_header.json', "r") as json_file:
+            json_data = json.load(json_file)
+            headers = json_data
+    except:
+        headers = yanolja_selenium()
+        write_yanolja_headers(headers)
+    current_date = DateFormat(datetime.now()).format('Y-m-d')
    
-    with open('yanolja_header.json', "r") as json_file:
-        json_data = json.load(json_file)
-    res = requests.get(test_url, headers=json_data)
-   
+    log_msg = '김포 HOTEL ASSEM'
+    test_url = 'https://partner.yanolja.com/reservation/search'    
+    date_str = '?dateType=RESERVATION_DATE'
+    start_date = '&startDate='+str(current_date)
+    end_date = '&endDate='+str(current_date)
+    #start_date = '&startDate=2202-08-09'
+    #end_date = '&endDate=2202-08-09'
+    res_status_str = '&reservationStatus=ALL'
+    keyword_type = '&keywordType=VISITOR_NAME&page=1&size=50'
+    sort_str = '&sort=checkInDate,desc'
+    selectdate_str = '&selectedDate='+str(current_date)
+    #selectdate_str = '&selectedDate=2202-08-09'
+    search_type = '&searchType=detail&useTypeDetail=ALL'
+    use_type = '&useTypeCheckIn=STAY'
+    test_url = test_url + date_str+start_date+end_date+res_status_str+keyword_type+sort_str+selectdate_str+search_type+use_type
+    #test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-09&endDate=2022-08-09&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-09&searchType=detail&useTypeDetail=ALL&useTypeCheckIn=STAY'
+    res = requests.get(test_url, headers=headers)
+    temp_test = res.text.encode('utf-8','ignore')
+    with open('test2.txt', 'wb') as temp_text :
+        temp_text.write(temp_test)
+    
+    p = re.compile('김포 HOTEL ASSEM')
+    result = p.findall(res.text)
+    if not result :
+        headers = yanolja_selenium()
+        res = requests.get(test_url, headers=headers)
+        write_yanolja_headers(headers)
+    
     # 예약현황 추출하기
     res_data = 0
     html = BeautifulSoup(res.text, 'html.parser')
@@ -549,51 +554,49 @@ def login_yanolja(request):
     try:
         test = infos[0].select_one('td.ReservationSearchListItem__visitor').text
         test2 = infos[0].select_one('td.ReservationSearchListItem__date').text
-    except:
-        headers = yanolja_selenium()
-        head = {'host':headers['host'], 'Connection':headers['Connection'], 'sec-ch-ua':headers['sec-ch-ua'], 'sec-ch-ua-mobile':headers['sec-ch-ua-mobile'],
-            'User-Agent':headers['User-Agent'], 'sec-ch-ua-platform':headers['sec-ch-ua-platform'], 'Accept':headers['Accept'], 'Sec-Fetch-Site':headers['Sec-Fetch-Site'],
-            'Sec-Fetch-Mode':headers['Sec-Fetch-Mode'], 'Sec-Fetch-Dest':headers['Sec-Fetch-Dest'],'Referer':headers['Referer'], 'Accept-Encoding':headers['Accept-Encoding'],
-            'Accept-Language':headers['Accept-Language'], 'Cookie':headers['Cookie']}
-
-        with open('yanolja_header.json', 'w') as outfile:
-            json.dump(head, outfile)
-       
-        with open('yanolja_header.json', "r") as json_file:
-            json_data = json.load(json_file)
-        res = requests.get(test_url, headers=json_data)    
+        
+        #headers = yanolja_selenium()
+        headers = write_yanolja_headers(headers)
+        res = requests.get(test_url, headers=headers)    
         html = BeautifulSoup(res.text, 'html.parser')
         infos = html.select('tr.ReservationSearchListItem')
-   
-    for i in range(len(infos)) :
-        test = infos[i].select_one('td.ReservationSearchListItem__visitor').text
-        test2 = infos[i].select_one('td.ReservationSearchListItem__date').text
-       
-        test = test.replace('\n','')
-        test = test.replace(' ','')
-       
-        pat_temp = p.findall(test)
-        pat_chk = p_chkinout.findall(test2)
-        #f.write(pat_chk)
-        for j in range(len(pat_temp)):
-            temp_name = pat_temp[j][0]
-            temp_phone = pat_temp[j][1]
-        #for j in range(len(pat_chk)):    
-        t_chkin = pat_chk[0]
-        t_chkout = pat_chk[1]
-           
-        temp['name'] =  temp_name
-        temp['phone'] = temp_phone
-        temp['room'] = infos[i].select_one('div.body-2').text
-        temp['chk'] = infos[i].select_one('td.ReservationSearchListItem__date').text
-        temp['chkin'] = t_chkin
-        temp['chkout'] = t_chkout
-        res_data.append(temp)
-        temp={}
-        res_name.append(infos[i].select_one('td.ReservationSearchListItem__visitor').text)
-        res_room_type.append(infos[i].select_one('div.body-2').text)
-        res_chk_data.append(infos[i].select_one('td.ReservationSearchListItem__date').text)
-       
+
+        for i in range(len(infos)) :
+            test = infos[i].select_one('td.ReservationSearchListItem__visitor').text
+            test2 = infos[i].select_one('td.ReservationSearchListItem__date').text
+        
+            test = test.replace('\n','')
+            test = test.replace(' ','')
+        
+            pat_temp = p.findall(test)
+            pat_chk = p_chkinout.findall(test2)
+            #f.write(pat_chk)
+            for j in range(len(pat_temp)):
+                temp_name = pat_temp[j][0]
+                temp_phone = pat_temp[j][1]
+            #for j in range(len(pat_chk)):    
+            t_chkin = pat_chk[0]
+            t_chkout = pat_chk[1]
+            
+            temp['name'] =  temp_name
+            temp['phone'] = temp_phone
+            temp['room'] = infos[i].select_one('div.body-2').text
+            temp['chk'] = infos[i].select_one('td.ReservationSearchListItem__date').text
+            temp['chkin'] = t_chkin
+            temp['chkout'] = t_chkout
+            res_data.append(temp)
+            temp={}
+            res_name.append(infos[i].select_one('td.ReservationSearchListItem__visitor').text)
+            res_room_type.append(infos[i].select_one('div.body-2').text)
+            res_chk_data.append(infos[i].select_one('td.ReservationSearchListItem__date').text)
+    except:
+        res_name = []
+        res_room_type = []
+        res_chk_data = []
+        temp = {}
+        res_data = []   
+        test2 = []     
+        pat_chk = []   
     f.close()
     context = { 'headers':headers,'res':res, 'res_name':res_name, 'res_room_type':res_room_type, 'res_chk_data':res_chk_data, 'res_data':res_data, 'test2':test2, 'pat_chk':pat_chk}
     #context = {'res':res}
