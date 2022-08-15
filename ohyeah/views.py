@@ -519,7 +519,7 @@ def login_yanolja(request):
     search_type = '&searchType=detail&useTypeDetail=ALL'
     use_type = '&useTypeCheckIn=STAY'
     #test_url = test_url + date_str+start_date+end_date+res_status_str+keyword_type+sort_str+selectdate_str+search_type+use_type
-    test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-09&endDate=2022-08-09&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-09&searchType=detail&useTypeDetail=STAY&useTypeCheckIn=STAY'
+    test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-15&endDate=2022-08-15&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-14&searchType=detail&useTypeDetail=ALL&useTypeCheckIn=ALL'
     res = requests.get(test_url, headers=headers)
     temp_test = res.text.encode('utf-8','ignore')
     with open('test2.txt', 'wb') as temp_text :
@@ -546,7 +546,9 @@ def login_yanolja(request):
     t_chkin = ''
     t_chkout = ''
    
-    p = re.compile('([가-힣]+)([0-9]+)')
+    #p = re.compile('([가-힣\*]+)([0-9]+)')
+    p = re.compile('([가-힣\*]+)([0-9]+|안심번호만료)')
+    p_c = re.compile('(\*)')
     p_chkinout = re.compile('([0-9\.]+\s\([가-힣]\)\s[0-9]*:[0-9]0)')
     f = open('.test.txt','w')
    
@@ -579,12 +581,27 @@ def login_yanolja(request):
             t_chkin = pat_chk[0]
             t_chkout = pat_chk[1]
             
+            
             temp['name'] =  temp_name
             temp['phone'] = temp_phone
             temp['room'] = infos[i].select_one('div.body-2').text
+            
+            t_c = p_c.findall(temp['name'])
+            if t_c :
+                # 취소한 사람이 있을 때
+                temp['res_type'] = 'cancel'
+            else :
+                temp['res_type'] = 'reservation'
+            
+            try:
+                temp['stay_type'] = infos[i].select_one('span.ya-font-stay').text
+            except:
+                temp['stay_type'] = infos[i].select_one('span.ya-font-rent').text
             temp['chk'] = infos[i].select_one('td.ReservationSearchListItem__date').text
             temp['chkin'] = t_chkin
             temp['chkout'] = t_chkout
+            temp['test'] = test
+            temp['info'] = infos[i]
             res_data.append(temp)
             temp={}
             res_name.append(infos[i].select_one('td.ReservationSearchListItem__visitor').text)
