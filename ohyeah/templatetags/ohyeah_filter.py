@@ -21,3 +21,7 @@ def convert_str_date(value):
 @register.filter
 def convert_str_month(value):
     return datetime.strptime(value, '%Y-%m').date()
+
+@register.filter
+def devide(value, arg):
+    return value / arg

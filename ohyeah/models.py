@@ -71,5 +71,7 @@ class EventHistory(models.Model):
     event_info = models.CharField(max_length=20, null=True)
     event_date = models.DateTimeField(null=True)
     event_history_date = models.DateTimeField(null=True)
+    
+
 
 

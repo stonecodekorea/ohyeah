@@ -23,5 +23,7 @@ urlpatterns = [
     path('daily_report/', views.daily_report, name='daily_report'),
     path('month_report/', views.month_report, name='month_report'),
     path('yanolja_test/', views.login_yanolja, name='yanolja_test'),
+    path('book_out_list_write/', views.book_out_status_write, name='book_out_list_write'),
+    path('out_list/',views.book_out_status_view, name='out_list'),
     
 ]

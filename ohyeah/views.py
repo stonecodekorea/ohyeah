@@ -11,7 +11,7 @@ from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup
-
+from django.views.decorators.csrf import csrf_exempt
 
 from .forms import RoomForm, ReservationForm, BookForm
 from .models import EventHistory, Room, Reservation, Booking
@@ -618,3 +618,39 @@ def login_yanolja(request):
     context = { 'headers':headers,'res':res, 'res_name':res_name, 'res_room_type':res_room_type, 'res_chk_data':res_chk_data, 'res_data':res_data, 'test2':test2, 'pat_chk':pat_chk}
     #context = {'res':res}
     return render(request, 'ohyeah/yanolja_test.html', context)
+
+#csrf_token 비활성화
+@csrf_exempt
+def book_out_status_write(request):
+    if request.method == "POST":
+        out_list = json.dumps(request.POST.get('out_list'))
+        f=open('./book_out_list.json','w')
+        f.write(out_list)
+        f.close()
+    return HttpResponse("ok")
+
+def book_out_status_view(request):
+    team = request.GET.get('team','up')
+    f=open('./book_out_list.json','r')
+    outlist = f.readlines()
+    test_data = []
+    up_data = []
+    down_data = []
+    data = json.dumps(outlist)
+    data = data.replace('\\','')
+    data = data.replace('\"','')
+    data = data.replace('[[','[')
+    data = data.replace(']]',']')
+    data = json.loads(data)
+    for j in data:
+        test_data.append(int(j))
+    test_data = reversed(sorted(test_data))
+    for j in test_data:
+        if j/100 >= 6:
+            up_data.append(j)
+        else :
+            down_data.append(j)
+    context = {'data':test_data, 'up':up_data, 'down':down_data, 'team':team}
+    f.close()
+    return render(request,'ohyeah/out_list.html', context)
+

@@ -31,4 +31,3 @@ class RoomFloorForm(forms.ModelForm):
     class Meta:
         model = TotalRoomFloor
         fields = ("room_floor_high","room_floor_low")
-

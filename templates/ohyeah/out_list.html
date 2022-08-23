@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{%load ohyeah_filter%}
+{%block content%}
+{% if team == "all" %}
+    {%include 'navbar.html' %}
+{% endif %}
+<table class="table table-bordered table-hover">
+    <tbody>
+    {% if team == "up" %}
+        <tr class="table-primary">
+        {% for out_list in up%}
+        
+            {% if out_list|devide:100 >= 6%}
+                <td>{{out_list}}</td>
+            {% else %}
+                <td>{{out_list}}</td>
+            {%endif%}
+            
+        {%endfor%}
+        </tr>
+    {% elif team == "down" %}
+        <tr class="table-danger">
+        {% for out_list in down%}
+
+            {% if out_list|devide:100 >= 6%}
+                <td>{{out_list}}</td>
+            {% else %}
+                <td>{{out_list}}</td>
+            {%endif%}
+        
+        {%endfor%}
+        
+        </tr>
+
+    {% elif team == "all" %}
+    <tr class="table-primary">
+        {% for out_list in up%}
+        
+            {% if out_list|devide:100 >= 6%}
+                <td>{{out_list}}</td>
+            {% else %}
+                <td>{{out_list}}</td>
+            {%endif%}
+            
+        {%endfor%}
+    </tr>
+    <tr class="table-danger">
+        {% for out_list in down%}
+
+            {% if out_list|devide:100 >= 6%}
+                <td>{{out_list}}</td>
+            {% else %}
+                <td>{{out_list}}</td>
+            {%endif%}
+        
+        {%endfor%}
+        
+        </tr>
+
+    {%endif%}
+    </tbody>
+</table>
+{%endblock%}
