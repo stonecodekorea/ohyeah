@@ -519,7 +519,7 @@ def login_yanolja(request):
     search_type = '&searchType=detail&useTypeDetail=ALL'
     use_type = '&useTypeCheckIn=STAY'
     #test_url = test_url + date_str+start_date+end_date+res_status_str+keyword_type+sort_str+selectdate_str+search_type+use_type
-    test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-15&endDate=2022-08-15&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-14&searchType=detail&useTypeDetail=ALL&useTypeCheckIn=ALL'
+    test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-18&endDate=2022-08-18&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-18&searchType=detail&useTypeDetail=ALL&useTypeCheckIn=ALL'
     res = requests.get(test_url, headers=headers)
     temp_test = res.text.encode('utf-8','ignore')
     

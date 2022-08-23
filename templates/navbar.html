@@ -46,9 +46,11 @@
               <li><a class="dropdown-item ohyeah-nav-link" href="#">네이버 예약 관리</a></li>
             </ul>
           </li>
+          {%if user.is_superuser %}
           <li class="nav-item">
             <a class="nav-link ohyeah-nav-link" href="{% url 'ohyeah:yanolja_test' %}">야놀자 테스트</a>
           </li>
+          {% endif %}
         </ul>
         
       
