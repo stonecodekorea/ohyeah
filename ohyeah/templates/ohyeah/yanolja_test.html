@@ -1,0 +1,45 @@
+{% extends 'base.html'%}
+
+{%block content%}
+{% include 'navbar.html'%}
+{{res.text}}
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>예약번호</th>
+            <th>이름</th>
+            <th>전화번호</th>
+            <th>객실타입</th>
+            <th>입실유형</th>
+            <th>체크인시간</th>
+            <th>체크아웃시간</th>
+            <th>예약/취소</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for data in res_data %}
+    {% if data.res_type == 'cancel' %}
+        <tr class="table-danger">
+    {% else %}
+        <tr>
+    {%endif%}
+            <td>{{data.res_number}}</td>
+            <td>{{data.name}}</td>
+            <td>{{data.phone}}</td>
+            <td>{{data.room}}</td>
+            <td>{{data.stay_type}}</td>
+            <td>{{data.chkin}}</td>
+            <td>{{data.chkout}}</td>
+            <td>{{data.res_type}}</td>
+            
+            
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+
+<form method="POST">
+    {%csrf_token%}
+    <input type="hidden" name="head" id="head" value="{{headers}}">
+</form>
+{%endblock%}

@@ -465,7 +465,12 @@ def event_add(event_obj):
     return True
         
 def yanolja_selenium():
-    driver = webdriver.Chrome(ChromeDriverManager().install())
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--single-process')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    driver = webdriver.Chrome(ChromeDriverManager().install(),chrome_options=chrome_options)
     login_url = 'https://account.yanolja.biz/?serviceType=PC&redirectURL=%2F&returnURL=https%3A%2F%2Fpartner.yanolja.com%2Fauth%2Flogin'
     driver.get(login_url)
     driver.implicitly_wait(10) # seconds
@@ -518,7 +523,7 @@ def login_yanolja(request):
     search_type = '&searchType=detail&useTypeDetail=ALL'
     use_type = '&useTypeCheckIn=STAY'
     #test_url = test_url + date_str+start_date+end_date+res_status_str+keyword_type+sort_str+selectdate_str+search_type+use_type
-    test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-18&endDate=2022-08-18&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-18&searchType=detail&useTypeDetail=ALL&useTypeCheckIn=ALL'
+    test_url = 'https://partner.yanolja.com/reservation/search?dateType=RESERVATION_DATE&startDate=2022-08-23&endDate=2022-08-23&reservationStatus=ALL&keywordType=VISITOR_NAME&page=1&size=50&sort=checkInDate,desc&selectedDate=2022-08-23&searchType=detail&useTypeDetail=ALL&useTypeCheckIn=ALL'
     res = requests.get(test_url, headers=headers)
     temp_test = res.text.encode('utf-8','ignore')
     
@@ -629,7 +634,17 @@ def book_out_status_write(request):
     return HttpResponse("ok")
 
 def book_out_status_view(request):
-    team = request.GET.get('team','up')
+    room_list = Room.objects.order_by('-room_floor','room_number')
+    up_room_list = []
+    down_room_list = []
+    
+    for room in room_list :
+        if (int(room.room_number)/100) >= 6:
+            up_room_list.append(room)
+        else :
+            down_room_list.append(room)
+    
+    team = request.GET.get('team','')
     f=open('./book_out_list.json','r')
     outlist = f.readlines()
     test_data = []
@@ -646,10 +661,9 @@ def book_out_status_view(request):
     test_data = reversed(sorted(test_data))
     for j in test_data:
         if j/100 >= 6:
-            up_data.append(j)
+            up_data.append(str(j))
         else :
-            down_data.append(j)
-    context = {'data':test_data, 'up':up_data, 'down':down_data, 'team':team}
+            down_data.append(str(j))
+    context = {'data':test_data, 'up':up_data, 'down':down_data, 'team':team,'room_list':room_list, 'up_room_list':up_room_list, 'down_room_list':down_room_list}
     f.close()
     return render(request,'ohyeah/out_list.html', context)
-

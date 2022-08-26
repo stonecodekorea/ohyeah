@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="">
+    <ul class="nav nav-tabs">
+        <li>
+    <table class="table table-hover text-center">
+        <thead>
+            <tr>
+                <th>객실번호</th>
+                <th>이름</th>
+                <th>날짜</th>
+                <th>이벤트내용</th>
+                <th>발생시간</th>
+                <th>입실타입</th>
+                <th>연박여부</th>
+            </tr>
+        </thead>
+        <tbody>
+                {% if status_category == "book_out" %}
+                    {% for book_out_list in event_obj.book_out_list%}
+                    <tr>
+                        <td>{{ book_out_list.event_room_number }}</td>
+                        <td><a href="{% url 'ohyeah:book_status' book_out_list.booking_id %}">{{ book_out_list.booking.book_name }}</a></td>
+                        <td>{{ book_out_list.event_date }}</td>
+                        {% if book_out_list.event_type == "reservation" %}
+                        <td> 예약 </td>
+                        {%elif book_out_list.event_type == "booking" %}
+                        <td> 입실 </td>
+                        {%elif book_out_list.event_type == "book_out" %}
+                        <td> 퇴실 </td>
+                        {%elif book_out_list.event_type == "clean_done" %}
+                        <td> 청소완료 </td>
+                        {% endif %}
+
+                        <td>{{book_out_list.event_history_date}}</td>
+
+                        {%if book_out_list.event_info == "rent" %}
+                        <td> 대실 </td>
+                        {%else %}
+                        <td> 숙박 </td>
+                        {%endif%}
+
+                        {%if book_out_list.event_type2 == "none" %}
+                        <td>  없음 </td>
+                        {%else %}
+                        <td> 연박 </td>
+                        {%endif%}
+                        
+                    </tr>
+                    {% endfor %}
+
+                {% elif status_category == "book_cleaned" %}
+                    {% for book_cleaned_list in event_obj.book_cleaned_list%}
+                    <tr>
+                        <td>{{ book_cleaned_list.event_room_number }}</td>
+                        <td><a href="{% url 'ohyeah:book_status' book_cleaned_list.booking_id %}">{{ book_cleaned_list.booking.book_name }}</a></td>
+                        <td>{{ book_cleaned_list.event_date }}</td>
+
+                        {% if book_cleaned_list.event_type == "reservation" %}
+                        <td> 예약 </td>
+                        {%elif book_cleaned_list.event_type == "booking" %}
+                        <td> 입실 </td>
+                        {%elif book_cleaned_list.event_type == "book_out" %}
+                        <td> 퇴실 </td>
+                        {%elif book_cleaned_list.event_type == "clean_done" %}
+                        <td> 청소완료 </td>
+                        {% endif %}
+
+                        <td>{{book_cleaned_list.event_history_date}}</td>
+
+                        {%if book_cleaned_list.event_info == "rent" %}
+                        <td> 대실 </td>
+                        {%else %}
+                        <td> 숙박 </td>
+                        {%endif%}
+                        {%if book_cleaned_list.event_type2 == "none" %}
+                        <td>  없음 </td>
+                        {%else %}
+                        <td> 연박 </td>
+                        {%endif%}
+                    </tr>
+                    {% endfor %}
+
+                {% elif status_category == "res_done" %}
+                    {% for res_done_list in event_obj.res_done_list%}
+                    <tr>
+                        <td>{{ res_done_list.event_room_number }}</td>
+                        <td><a href="{% url 'ohyeah:res_status' res_done_list.reservation_id %}">{{ res_done_list.reservation.res_name }}</a></td>
+                        <td>{{ res_done_list.event_date }}</td>
+                        {% if res_done_list.event_type == "reservation" %}
+                        <td> 예약 </td>
+                        {%elif res_done_list.event_type == "booking" %}
+                        <td> 입실 </td>
+                        {%elif res_done_list.event_type == "book_out" %}
+                        <td> 퇴실 </td>
+                        {%elif res_done_list.event_type == "clean_done" %}
+                        <td> 청소완료 </td>
+                        {% endif %}
+
+                        <td>{{res_done_list.event_history_date}}</td>
+
+                        {%if res_done_list.event_info == "rent" %}
+                        <td> 대실 </td>
+                        {%else %}
+                        <td> 숙박 </td>
+                        {%endif%}
+                        {%if res_done_list.event_type2 == "none" %}
+                        <td>  없음 </td>
+                        {%else %}
+                        <td> 연박 </td>
+                        {%endif%}
+                    </tr>
+                    {% endfor %}
+
+                {% elif status_category == "res_not" %}
+                    {% for res_not_yet_list in event_obj.res_not_yet_list%}
+                    <tr>
+                        {{event_list}}
+                        <td>{{ res_not_yet_list.event_room_number }}</td>
+                        <td><a href="{% url 'ohyeah:res_status' res_not_yet_list.reservation_id%}">{{ res_not_yet_list.reservation.res_name }}</a></td>
+                        <td>{{ res_not_yet_list.event_date }}</td>
+                        {% if res_not_yet_list.event_type == "reservation" %}
+                        <td> 예약 </td>
+                        {%elif res_not_yet_list.event_type == "booking" %}
+                        <td> 입실 </td>
+                        {%elif res_not_yet_list.event_type == "book_out" %}
+                        <td> 퇴실 </td>
+                        {%elif res_not_yet_list.event_type == "clean_done" %}
+                        <td> 청소완료 </td>
+                        {% endif %}
+                        <td>{{ res_not_yet_list.event_history_date }}</td>
+                        {%if res_not_yet_list.event_info == "rent" %}
+                        <td> 대실 </td>
+                        {%else %}
+                        <td> 숙박 </td>
+                        {%endif%}
+                        {%if res_not_yet_list.event_type2 == "none" %}
+                        <td>  없음 </td>
+                        {%else %}
+                        <td> 연박 </td>
+                        {%endif%}
+                    </tr>
+                    {% endfor %}
+                {% elif status_category == "book_rent" %}
+                    {% for book_rent_done_list in event_obj.book_rent_done_list%}
+                    <tr>
+                        <td>{{ book_rent_done_list.event_room_number }}</td>
+                        <td><a href="{% url 'ohyeah:book_status' book_rent_done_list.booking_id %}">{{ book_rent_done_list.booking.book_name }}</a></td>
+                        <td>{{ book_rent_done_list.event_date }}</td>
+                        {% if book_rent_done_list.event_type == "reservation" %}
+                        <td> 예약 </td>
+                        {%elif book_rent_done_list.event_type == "booking" %}
+                        <td> 입실 </td>
+                        {%elif book_rent_done_list.event_type == "book_out" %}
+                        <td> 퇴실 </td>
+                        {%elif book_rent_done_list.event_type == "clean_done" %}
+                        <td> 청소완료 </td>
+                        {% endif %}
+                        <td>{{ book_rent_done_list.event_history_date }}</td>
+                        {%if book_rent_done_list.event_info == "rent" %}
+                        <td> 대실 </td>
+                        {%else %}
+                        <td> 숙박 </td>
+                        {%endif%}
+                        {%if book_rent_done_list.event_type2 == "none" %}
+                        <td>  없음 </td>
+                        {%else %}
+                        <td> 연박 </td>
+                        {%endif%}
+                    </tr>
+                    {% endfor %}
+                {% elif status_category == "book_stay" %}
+                    {% for book_stay_done_list in event_obj.book_stay_done_list%}
+                    <tr>
+                        <td>{{ book_stay_done_list.event_room_number }}</td>
+                        <td><a href="{% url 'ohyeah:book_status' book_stay_done_list.booking_id %}">{{ book_stay_done_list.booking.book_name }}</a></td>
+                        <td>{{ book_stay_done_list.event_date }}</td>
+                        {% if book_stay_done_list.event_type == "reservation" %}
+                        <td> 예약 </td>
+                        {%elif book_stay_done_list.event_type == "booking" %}
+                        <td> 입실 </td>
+                        {%elif book_stay_done_list.event_type == "book_out" %}
+                        <td> 퇴실 </td>
+                        {%elif book_stay_done_list.event_type == "clean_done" %}
+                        <td> 청소완료 </td>
+                        {% endif %}
+                        <td>{{ book_stay_done_list.event_history_date }}</td>
+                        {%if book_stay_done_list.event_info == "rent" %}
+                        <td> 대실 </td>
+                        {%else %}
+                        <td> 숙박 </td>
+                        {%endif%}
+                        {%if book_stay_done_list.event_type2 == "none" %}
+                        <td>  없음 </td>
+                        {%else %}
+                        <td> 연박 </td>
+                        {%endif%}
+                    </tr>
+                    {% endfor %}
+                {% elif status_category == "res_not_rent" %}
+                    {% for res_not_yet_rent_list in event_obj.res_not_yet_rent_list%}
+                    <tr>
+                        <td>{{ res_not_yet_rent_list.event_room_number }}</td>
+                        <td><a href="{% url 'ohyeah:res_status' res_not_yet_rent_list.reservation_id %}">{{ res_not_yet_rent_list.reservation.res_name }}</a></td>
+                        <td>{{ res_not_yet_rent_list.event_date }}</td>
+                        {% if res_not_yet_rent_list.event_type == "reservation" %}
+                        <td> 예약 </td>
+                        {%elif res_not_yet_rent_list.event_type == "booking" %}
+                        <td> 입실 </td>
+                        {%elif res_not_yet_rent_list.event_type == "book_out" %}
+                        <td> 퇴실 </td>
+                        {%elif res_not_yet_rent_list.event_type == "clean_done" %}
+                        <td> 청소완료 </td>
+                        {% endif %}
+                        <td>{{ res_not_yet_rent_list.event_history_date }}</td>
+                        {%if res_not_yet_rent_list.event_info == "rent" %}
+                        <td> 대실 </td>
+                        {%else %}
+                        <td> 숙박 </td>
+                        {%endif%}
+                        {%if res_not_yet_rent_list.event_type2 == "none" %}
+                        <td>  없음 </td>
+                        {%else %}
+                        <td> 연박 </td>
+                        {%endif%}
+                    </tr>
+                    {% endfor %}
+                {% elif status_category == "res_not_stay" %}
+                    {% for res_not_yet_stay_list in event_obj.res_not_yet_stay_list%}
+                    <tr>
+                        <td>{{ res_not_yet_stay_list.event_room_number }}</td>
+                        <td><a href="{% url 'ohyeah:res_status' res_not_yet_stay_list.reservation_id %}">{{ res_not_yet_stay_list.reservation.res_name }}</td>
+                        <td>{{ res_not_yet_stay_list.event_date }}</td>
+                        {% if res_not_yet_stay_list.event_type == "reservation" %}
+                        <td> 예약 </td>
+                        {%elif res_not_yet_stay_list.event_type == "booking" %}
+                        <td> 입실 </td>
+                        {%elif res_not_yet_stay_list.event_type == "book_out" %}
+                        <td> 퇴실 </td>
+                        {%elif res_not_yet_stay_list.event_type == "clean_done" %}
+                        <td> 청소완료 </td>
+                        {% endif %}
+                        <td>{{ res_not_yet_stay_list.event_history_date }}</td>
+                        {%if res_not_yet_stay_list.event_info == "rent" %}
+                        <td> 대실 </td>
+                        {%else %}
+                        <td> 숙박 </td>
+                        {%endif%}
+                        {%if res_not_yet_stay_list.event_type2 == "none" %}
+                        <td>  없음 </td>
+                        {%else %}
+                        <td> 연박 </td>
+                        {%endif%}
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            
+        </tbody>
+    </table>
+</div>
+{% endblock %}

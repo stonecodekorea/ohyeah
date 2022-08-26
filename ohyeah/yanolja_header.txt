@@ -1,0 +1,15 @@
+Host: partner.yanolja.com
+Connection: keep-alive
+sec-ch-ua: "Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"
+sec-ch-ua-mobile: ?0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.81 Safari/537.36
+sec-ch-ua-platform: "Windows"
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: https://partner.yanolja.com/
+Accept-Encoding: gzip, deflate, br
+Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: i18n_redirected=ko; extranetClientId=ap-northeast-2%3A2ef37c12-3148-4c93-8b12-86fb2b710a65; atoken=eyJhbGciOiJIUzI1NiJ9.eyJhdG9rZW4iOiJhcThGOE9KQlg1VmNzc1laTSs5TFFTYWcxVlRQL1hQQlRuUU9YdUJBOUNzSE9hV0xjU1o1RzZOeDNnczVndDFZIiwicG5vcyI6WzMwMTYzNTMsMzAxNzYxOF0sImlzcyI6InNvcyIsImV4cCI6MTY2MDA3NjE0NzIxOCwiaWF0IjoxNjYwMDcyNTQ3MjE4LCJtZW1iZXJJZCI6MjU5MTR9.4-UgNxhCwoZHQ9VwNYw7RtvOD2iVGu5EaKVYgqSdZOo; rtoken=mrHze6I5AmSu7HB4wy2JrKKFwsd3mapf1YcAxRi3wmwycutAn3CsY2k9GHskwT%2Fh; autoLoginYN=N; pno=3016353
+

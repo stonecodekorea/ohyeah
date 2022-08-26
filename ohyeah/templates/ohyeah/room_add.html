@@ -1,0 +1,26 @@
+{%extends 'base.html'%}
+{% block content %}
+{%include 'navbar.html' %}
+<div class="container room-add">
+    <form method="POST">
+        {%csrf_token%}
+        <div class="input-group">
+            <span class="input-group-text" id="">객실번호</span>
+            <input type="text" name="room_number" id="roomNumber" class="form-control" placeholder="객실번호" value="">
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="">객실타입</span>
+            <input type="text" name="room_type" id="roomType" class="form-control" placeholder="객실타입" value="">
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="">객실층수</span>
+            <input type="text" name="room_floor" id="roomFloor" class="form-control" placeholder="객실층수" value="">
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="">객실보이기</span>
+            <input type="text" name="room_visi" id="roomVisi" class="form-control" placeholder="객실보이기" value="">
+        </div>
+        <input type="submit" value="객실추가하기" class="btn btn-primary">
+    </form>
+</div>
+{%endblock%}

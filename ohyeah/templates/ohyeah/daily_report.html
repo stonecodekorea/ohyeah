@@ -1,0 +1,258 @@
+{% extends 'base.html'%}
+{% load ohyeah_filter %}
+{%block content%}
+{%include 'navbar.html' %}
+{% with status_date|convert_str_date as status %}
+<div class="row ohyeah-row">
+    <div class="p-3 container">
+        <div class="row ohyeah-row">
+            <div class="col-2">
+                <div class="input-group">
+                    <span class="input-group-text" id="resDate">날짜</span>
+                    <input id="reserveDate" class="form-control" type="date" value="{{status_date}}">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row ohyeah-row">
+        <div class="container text-center">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th rowspan="2" colspan="2">구분</th>
+                        <th rowspan="2">객실수</th>
+                        <th colspan="5">결제 타입별 개수</th>
+                        <th colspan="5">결제 타입별 금액</th>
+                        <th rowspan="2" class="col-2">소계</th>
+                    </tr>
+                    <tr>
+                        <th class="col">카드</th>
+                        <th class="col">현금</th>
+                        <th class="col">온라인</th>
+                        <th class="col">계좌</th>
+                        <th class="col">미수</th>
+                        <th class="col">카드</th>
+                        <th class="col">현금</th>
+                        <th class="col">온라인</th>
+                        <th class="col">계좌</th>
+                        <th class="col">미수</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="5">대실</td>
+                    </tr>
+                    <tr>
+                        <td>무인기</td>
+                        <td>{{rent_kiosk_list.count}}</td>
+                        <td colspan="5">{{rent_kiosk_cash_count.count|default_if_none:0}}</td>
+                        <td colspan="5">{{rent_kiosk_cash_amount.book_cash_money__sum|default_if_none:0}}</td>
+                        <td>{{rent_kiosk_cash_amount.book_cash_money__sum|default_if_none:0}}</td>
+                    </tr>
+                    <tr>
+                        <td>야놀자</td>
+                        <td>{{rent_yanolja_list.count}}</td>
+                        <td colspan="5">{{rent_yanolja_list.count}}</td>
+                        <td colspan="5">{{rent_yanolja_total_amount.book_money__sum|default_if_none:0}}</td>
+                        <td>{{rent_yanolja_total_amount.book_money__sum|default_if_none:0}}</td>
+                    </tr>
+                    <tr>
+                        <td>워크인</td>
+                        <td>{{rent_walkin_list.count}}</td>
+                        <td>{{rent_walkin_card_count.count|default_if_none:0}}</td>
+                        <td>{{rent_walkin_cash_count.count|default_if_none:0}}</td>
+                        <td>&nbsp;</td>
+                        <td>{{rent_walkin_bank_count.count|default_if_none:0}}</td>
+                        <td>{{rent_walkin_misu_count.count|default_if_none:0}}</td>
+                        <td>{{rent_walkin_card_amount.book_card_money__sum|default_if_none:0}}</td>
+                        <td>{{rent_walkin_cash_amount.book_cash_money__sum|default_if_none:0}}</td>
+                        <td>&nbsp;</td>
+                        <td>{{rent_walkin_bank_amount.book_bank_money__sum|default_if_none:0}}</td>
+                        <td>{{rent_walkin_misu_amount.book_misu_money__sum|default_if_none:0}}</td>
+                        <td>{{rent_walkin_total_money.book_money__sum|default_if_none:0}}</td>
+                    </tr>
+                    <tr class="table-danger">
+                        <td>소계</td>
+                        <td>{{rent_count}}</td>
+                        <td>{{rent_walkin_card_count.count|default_if_none:0}}</td>
+                        <td>{{rent_walkin_cash_count.count|default_if_none:0}}</td>
+                        <td>{{rent_yanolja_total_count.count|default_if_none:0}}</td>
+                        <td>{{rent_walkin_bank_count.count|default_if_none:0}}</td>
+                        <td>{{rent_walkin_misu_count.count|default_if_none:0}}</td>
+                        <td>{{rent_walkin_card_amount.book_card_money__sum|default_if_none:0}}</td>
+                        <td>{{rent_cash_total_money}}</td>
+                        <td>{{rent_yanolja_total_amount.book_money__sum|default_if_none:0}}</td>
+                        <td>{{rent_walkin_bank_amount.book_bank_money__sum|default_if_none:0}}</td>
+                        <td>{{rent_walkin_misu_amount.book_misu_money__sum|default_if_none:0}}</td>
+                        <td>{{rent_total_money.book_money__sum|default_if_none:0}}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="8">숙박{{test}}</td>
+                    </tr>
+                    <tr>
+                        <td>무인기</td>
+                        <td>{{stay_kiosk_list.count}}</td>
+                        <td colspan="5">{{stay_kiosk_cash_count.count|default_if_none:0}}</td>
+                        <td colspan="5">{{stay_kiosk_cash_amount.book_cash_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_kiosk_cash_amount.book_cash_money__sum|default_if_none:0}}</td>
+                    </tr>
+                    <tr>
+                        <td>야놀자</td>
+                        <td>{{stay_yanolja_list.count}}</td>
+                        <td colspan="5">{{stay_yanolja_total_count.count|default_if_none:0}}</td>
+                        <td colspan="5">{{stay_yanolja_total_amount.book_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_yanolja_total_amount.book_money__sum|default_if_none:0}}</td>
+                    </tr>
+                    <tr>
+                        <td>호텔스토리</td>
+                        <td>{{stay_hotelstory_list.count}}</td>
+                        <td colspan="5">{{stay_hotelstory_total_count.count|default_if_none:0}}</td>
+                        <td colspan="5">{{stay_hotelstory_total_amount.book_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_hotelstory_total_amount.book_money__sum|default_if_none:0}}</td>
+                    </tr>
+                    <tr>
+                        <td>네이버</td>
+                        <td>{{stay_naver_list.count}}</td>
+                        <td colspan="5">{{stay_naver_total_count.count|default_if_none:0}}</td>
+                        <td colspan="5">{{stay_naver_total_amount.book_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_naver_total_amount.book_money__sum|default_if_none:0}}</td>
+                    </tr>
+                    <tr>
+                        <td>워크인</td>
+                        <td>{{stay_walkin_list.count}}</td>
+                        <td>{{stay_walkin_card_count.count|default_if_none:0}}</td>
+                        <td>{{stay_walkin_cash_count.count|default_if_none:0}}</td>
+                        <td>&nbsp;</td>
+                        <td>{{stay_walkin_bank_count.count|default_if_none:0}}</td>
+                        <td>{{stay_walkin_misu_count.count|default_if_none:0}}</td>
+                        <td>{{stay_walkin_card_amount.book_card_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_walkin_cash_amount.book_cash_money__sum|default_if_none:0}}</td>
+                        <td>&nbsp;</td>
+                        <td>{{stay_walkin_bank_amount.book_bank_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_walkin_misu_amount.book_misu_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_walkin_total_money.book_money__sum|default_if_none:0}}</td>
+                    </tr>
+                    <tr>
+                        <td>재실</td>
+                        <td>{{stay_sev_obj.stay_sev_count|default_if_none:0}}</td>
+                        <td>{{stay_sev_obj.stay_sev_walkin_card_count.count|default_if_none:0}}</td>
+                        <td>{{stay_sev_obj.stay_sev_walkin_cash_count.count|default_if_none:0}}</td>
+                        <td>{{stay_sev_obj.stay_sev_online_total_count.count|default_if_none:0}}</td>
+                        <td>{{stay_sev_obj.stay_sev_walkin_bank_count.count|default_if_none:0}}</td>
+                        <td>{{stay_sev_obj.stay_sev_walkin_misu_count.count|default_if_none:0}}</td>
+                        <td>{{stay_sev_obj.stay_sev_walkin_card_amount.book_card_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_sev_obj.stay_sev_walkin_cash_amount.book_cash_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_sev_obj.stay_sev_online_total_amount.book_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_sev_obj.stay_sev_walkin_bank_amount.book_bank_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_sev_obj.stay_sev_walkin_misu_amount.book_misu_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_sev_obj.stay_sev_total_money.book_money__sum|default_if_none:0}}</td>
+                    </tr>
+                    <tr class="table-danger">
+                        <td>소계</td>
+                        <td>{{stay_kiosk_list.count|add:stay_yanolja_list.count|add:stay_hotelstory_list.count|add:stay_naver_list.count|add:stay_walkin_list.count}}</td>
+                        <td>{{stay_walkin_card_count.count}}</td>
+                        <td>{{stay_walkin_cash_count.count}}</td>
+                        <td>{{stay_online_total_count.count}}</td>
+                        <td>{{stay_walkin_bank_count.count}}</td>
+                        <td>{{stay_walkin_misu_count.count}}</td>
+                        <td>{{stay_walkin_card_amount.book_card_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_walkin_cash_amount.book_cash_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_online_total_amount.book_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_walkin_bank_amount.book_bank_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_walkin_misu_amount.book_misu_money__sum|default_if_none:0}}</td>
+                        <td>{{stay_total_money.book_money__sum|default_if_none:0}}</td>
+                    </tr>
+                    <tr class="table-danger">
+                        <td colspan="2">총계(호텔)</td>
+                        <td>{{book_list.count}}</td>
+                        <td>{{total_card_count.count}}</td>
+                        <td>{{total_cash_count.count}}</td>
+                        <td>{{total_online_count.count}}</td>
+                        <td>{{total_bank_count.count}}</td>
+                        <td>{{total_misu_count.count}}</td>
+                        <td>{{total_card_sum.book_card_money__sum|default_if_none:0}}</td>
+                        <td>{{book_stay_money_total|default_if_none:0}}</td>
+                        <td>{{total_online_sum.book_money__sum|default_if_none:0}}</td>
+                        <td>{{total_bank_sum.book_bank_money__sum|default_if_none:0}}</td>
+                        <td>{{total_misu_sum.book_misu_money__sum|default_if_none:0}}</td>
+                        <td>{{book_stay_money_total|default_if_none:0}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="chart" id="piechart">
+</div>
+<div class="chart" id="guest_type">
+</div>
+<form id="searchForm" method="GET">
+    <input type="hidden" name="res_date" id="res_date">
+    <input type="submit" style="visibility:hidden" value="search">
+</form>
+{% endwith %}
+{% endblock %}
+{% block script %}
+<script>
+let resSearchDate = document.getElementById('reserveDate')
+test = {{stay_kiosk_list.count}}+{{stay_yanolja_list.count}}+{{stay_hotelstory_list.count}}+{{stay_naver_list.count}}+{{stay_walkin_list.count}}
+test2 = {{rent_kiosk_list.count}}/{{rent_count}}
+walkin_total_money = {{stay_walkin_cash_amount.book_cash_money__sum|default_if_none:0}}+{{stay_walkin_card_amount.book_card_money__sum|default_if_none:0}}+{{stay_walkin_bank_amount.book_bank_money__sum|default_if_none:0}}+{{stay_walkin_misu_amount.book_misu_money__sum|default_if_none:0}}
+walkin_rent_total_money = {{rent_walkin_card_amount.book_card_money__sum|default_if_none:0}}+{{rent_walkin_cash_amount.book_cash_money__sum|default_if_none:0}}+{{rent_walkin_bank_amount.book_bank_money__sum|default_if_none:0}}+{{rent_walkin_misu_amount.book_misu_money__sum|default_if_none:0}}
+resSearchDate.addEventListener('change',event=>{
+    console.log(event.srcElement.value)
+    document.getElementById('res_date').value = event.srcElement.value
+    document.getElementById('searchForm').submit()
+})
+
+google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Income', 'method'],
+          ['무인기 대실',     {{rent_kiosk_cash_amount.book_cash_money__sum|default_if_none:0}}],
+          ['야놀자 대실',     {{rent_yanolja_total_amount.book_money__sum|default_if_none:0}}],
+          ['워크인 대실',     {{rent_walkin_total_money.book_money__sum|default_if_none:0}}],
+          ['무인기 숙박',     {{stay_kiosk_cash_amount.book_cash_money__sum|default_if_none:0}}],
+          ['야놀자 숙박',      {{stay_yanolja_total_amount.book_money__sum|default_if_none:0}}],
+          ['호텔스토리 숙박',  {{stay_hotelstory_total_amount.book_money__sum|default_if_none:0}}],
+          ['워크인 숙박', walkin_total_money],
+          ['재실 숙박',    {{stay_sev_obj.stay_sev_total_money.book_money__sum|default_if_none:0}}]
+        ]);
+
+        var options = {
+          title: '일별 매출 분석'
+        };
+
+        var type_data = google.visualization.arrayToDataTable([
+            ['Type', 'guest'],
+            ['무인기 대실', {{rent_type.rent_kiosk.count|default_if_none:0}}],
+            ['워크인 커플 대실', {{rent_type.rent_walkin_c.count|default_if_none:0}}],
+            ['워크인 비즈니스 대실', {{rent_type.rent_walkin_b.count|default_if_none:0}}],
+            ['워크인 패밀리 대실', {{rent_type.rent_walkin_f.count|default_if_none:0}}],
+            ['온라인 커플 대실', {{rent_type.rent_online_c.count|default_if_none:0}}],
+            ['온라인 비즈니스 대실', {{rent_type.rent_online_b.count|default_if_none:0}}],
+            ['온라인 패밀리 대실', {{rent_type.rent_online_f.count|default_if_none:0}}],
+            ['무인기 숙박', {{stay_type.stay_kiosk.count|default_if_none:0}}],
+            ['워크인 커플 숙박', {{stay_type.stay_walkin_c.count|default_if_none:0}}],
+            ['워크인 비즈니스 숙박', {{stay_type.stay_walkin_b.count|default_if_none:0}}],
+            ['워크인 패밀리 숙박', {{stay_type.stay_walkin_f.count|default_if_none:0}}],
+            ['온라인 커플 숙박', {{stay_type.stay_online_c.count|default_if_none:0}}],
+            ['온라인 비즈니스 숙박', {{stay_type.stay_online_b.count|default_if_none:0}}],
+            ['온라인 패밀리 숙박', {{stay_type.stay_online_f.count|default_if_none:0}}],
+        ])
+
+        var type_options = {
+            title: '고객 유형별 분류'
+        }
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        var typeChart = new google.visualization.PieChart(document.getElementById('guest_type'));
+
+        chart.draw(data, options);
+        typeChart.draw(type_data, type_options);
+      }
+</script>
+{% endblock %}

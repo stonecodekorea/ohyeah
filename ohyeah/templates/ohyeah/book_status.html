@@ -1,0 +1,135 @@
+{% extends 'base.html'%}
+{% load ohyeah_filter %}
+{% block content %}
+{% with status_date|convert_str_date as status %} 
+<div class="container">
+    <div class="accordion">
+        <div class="accordion-item">
+            <div class="accordion-header">
+                상세 내역
+            </div>
+            <div class="accordion-body">
+                <table class="table table-hover w-auto">
+                    <tr>
+                        <th class="table-active">투숙자</th>
+                        <td colspan="3">{{book.book_name}}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">객실번호</th>
+                        <td colspan="3">{{book.book_room_number}}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">총 금액</th>
+                        <td colspan="3">{{book.book_money}}</td>
+                        
+                    </tr>
+                    <tr>
+                        <th class="table-active">현금 금액</th>
+                        <td>{{book.book_cash_money}}</td>
+                        <th class="table-active">카드 금액</th>
+                        <td>{{book.book_card_money}}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">계좌 금액</th>
+                        <td>{{book.book_bank_money}}</td>
+                        <th class="table-active">미수 금액</th>
+                        <td>{{book.book_misu_money}}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active" >이용 인원</th>
+                        <td colspan="3">{{book.book_person}}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">투숙 방식</th>
+                        {% if book.book_type == "rent" %}
+                            <td>대실</td>
+                        {% else %}
+                            <td>숙박</td>
+                        {% endif %}
+                        <th class="table-active">예약 채널</th>
+                        {% if book.book_ota == "yanolja" %}
+                        <td>야놀자</td>
+                        {%elif book.book_ota == "hotelstory" %}
+                        <td>호텔스토리</td>
+                        {%elif book.book_ota == "walkin" %}
+                        <td>워크인</td>
+                        {%else %}
+                        <td>무인기</td>
+                        {%endif%}
+                    </tr>
+                    <tr>
+                        <th class="table-active">회사명</th>
+                        <td colspan="3">{{book.book_company}}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">고객타입</th>
+                        {% if book.book_guest_type == "wic" %}
+                        <td colspan="3">워크인 커플</td>
+                        {%elif book.book_guest_type == "wib" %}
+                        <td colspan="3">워크인 비즈니스</td>
+                        {%elif book.book_guest_type == "wif" %}
+                        <td colspan="3">워크인 패밀리</td>
+                        {%elif book.book_guest_type == "onc" %}
+                        <td colspan="3">온라인 커플</td>
+                        {%elif book.book_guest_type == "onb" %}
+                        <td colspan="3">온라인 비즈니스</td>
+                        {%elif book.book_guest_type == "onf" %}
+                        <td colspan="3">온라인 패밀리</td>
+                        {%else %}
+                        <td colspan="3">무인기</td>
+                        {%endif%}
+                    </tr>
+                    <tr>
+                        <th class="table-active">고객 연락처</th>
+                        <td colspan="3">{{book.book_guest_phone}}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">체크인</th>
+                        <td>{{book.book_chkin|date:'Y-m-d'}}</td>
+                        <th class="table-active">체크아웃</th>
+                        <td>{{book.book_chkout|date:'Y-m-d'}}</td>
+                    </tr>
+                    <tr>
+                        <th class="table-active">체크인 시간</th>
+                        <td>{{book.book_chk_time|date:'H:i:s'}}</td>
+                        <th class="table-active">숙박 접수</th>
+                        <td>{{book.book_date|date:'Y-m-d H:i:s'}}</td>
+                    </tr>       
+                    <tr>
+                        <th class="table-active">지불 방법</th>
+                        <td colspan="3">{{book.book_payment_info}}</td>
+                    </tr>       
+                    <tr>
+                        <th class="table-active">기타 고객 정보</th>
+                        <td colspan="3">{{book.book_guest_info}}</td>
+                    </tr>       
+                </table>
+                <div>
+                    <a class="btn btn-primary" href="{% url 'ohyeah:book_modify' book.id%}">입실 수정</a>
+                    {%if book.book_status != "off"%}
+                    <a class="btn btn-secondary" href="{% url 'ohyeah:book_out' book.id status_date%}">퇴실</a>
+                    {%endif%}
+                    {% if book.book_status != "off"%}
+
+                    {% else %}
+                    <a class="btn btn-secondary" href="{% url 'ohyeah:book_clean_done' book.id status_date%}">청소완료</a>
+                    {% endif %}
+                    <a class="btn btn-danger" href="{% url 'ohyeah:book_delete' book.id%}" onclick="closeWindowReload()">입실 삭제/취소</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%endwith%}
+{% endblock %}
+
+{% block script %}
+<script>
+function closeWindowReload(){
+    window.onunload = refreshParent;
+    function refreshParent() {
+        window.opener.location.reload();
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html'%}
+{% load ohyeah_filter %}
+{%block content%}
+{%include 'navbar.html' %}
+{% with status_date|convert_str_month as status %}
+<div class="row ohyeah-row">
+    <div class="p-3 container">
+        <div class="row ohyeah-row">
+            <div class="col-2">
+                <div class="input-group">
+                    <span class="input-group-text" id="resDate">날짜</span>
+                    <input id="reserveDate" class="form-control" type="month" value="{{status_date}}">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row ohyeah-row">
+    </div>
+
+</div>
+{%endwith%}
+{%endblock%}
+{%block script%}
+
+{%endblock%}

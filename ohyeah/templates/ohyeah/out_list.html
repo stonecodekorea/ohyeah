@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{%load ohyeah_filter%}
+{%block content%}
+{% if team == "all" %}
+    {%include 'navbar.html' %}
+{% endif %}
+<div class="row ohyeah-row">
+    <div class="ohyeah-status">
+        {% if team == 'all' or team == 'up' %}
+            {% regroup up_room_list by room_floor as newlist %}
+                {% for f in newlist %}
+                    <div class="room-rec-row">
+                    {% for r in f.list %}
+                            {% if r.room_visi == "yes" %}
+                                
+                            <div class="card room_rec justify-content-center">
+                                
+                                <div class="card-body"> 
+                                    <div class="card-title">
+                                        <p class="res-room-btn-text">{{r.room_number}}</p></button>          
+                                    </div>
+                                    <div class="card-subtitle">
+                                        <div class="res-area">
+                                            <div class="d-flex justify-content-start">
+                                                {%for out_list in up%}
+                                                    {%if r.room_number == out_list%}     
+                                                        <span class="outRoom">OUT</span>
+                                                    {% else %}
+                                                        
+                                                    {%endif%}
+                                                {%endfor%}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {% else %}
+                            <div class="card room_rec_hidden justify-content-center" id="room_rec_">
+                                <div class="card-body">
+                                    <div class="card-title"><button class="btn btn-default room-rec-btn" type="button" data-bs-toggle="modal" data-bs-target="#ohyeahModal_{{r.room_number}}">
+                                        <p class="res-room-btn-text">{{r.room_number}} 입실</p></button></div>
+                                        <div class="card-subtitle">
+                                            <div class="res-area">
+                                                <div class="d-flex justify-content-start">
+                                                &nbsp;
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                            {% endif %}  
+                                
+                    {% endfor %}
+                    </div>
+                {%endfor%}
+            {% endif %}
+            {% if team == 'all' or team == 'down' %}
+            {% regroup down_room_list by room_floor as newlist %}
+                {% for f in newlist %}
+                    <div class="room-rec-row">
+                    {% for r in f.list %}
+                            {% if r.room_visi == "yes" %}
+                                
+                            <div class="card room_rec justify-content-center">
+                                
+                                <div class="card-body"> 
+                                    <div class="card-title">
+                                        <p class="res-room-btn-text">{{r.room_number}}</p></button>          
+                                    </div>
+                                    <div class="card-subtitle">
+                                        <div class="res-area">
+                                            <div class="d-flex justify-content-start">
+                                                {%for out_list in down%}
+                                                    {%if r.room_number == out_list%}     
+                                                        <span class="outRoom">OUT</span>
+                                                    {% else %}
+                                                        <span class="noOutRoom">&nbsp;</span>
+                                                    {%endif%}
+                                                {%endfor%}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {% else %}
+                            <div class="card room_rec_hidden justify-content-center" id="room_rec_">
+                                <div class="card-body">
+                                    <div class="card-title"><button class="btn btn-default room-rec-btn" type="button" data-bs-toggle="modal" data-bs-target="#ohyeahModal_{{r.room_number}}">
+                                        <p class="res-room-btn-text">{{r.room_number}} 입실</p></button></div>
+                                        <div class="card-subtitle">
+                                            <div class="res-area">
+                                                <div class="d-flex justify-content-start">
+                                                &nbsp;
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                            {% endif %}  
+                                
+                    {% endfor %}
+                    </div>
+                {%endfor%}
+            {% else %}
+
+        {%endif%}
+            </div>
+        </div>
+{%endblock%}
+{%block script%}
+<script>
+    test = document.getElementsByClassName('outRoom')
+    $('.outRoom').parents('div.room_rec').css('background-color','#adb5bd')
+</script>
+{%endblock%}
