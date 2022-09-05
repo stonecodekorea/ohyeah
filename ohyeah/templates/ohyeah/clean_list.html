@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'navbar.html' %}
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <div class="row">
+                <h2 class="text-center">윗팀 청소 총 개수 : {{uc_total_count}}</h2>
+            </div>
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>객실번호</th>
+                        <th>청소카운트</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in uc%}
+                    <tr>
+                        <td>{{u.room}}</td>
+                        <td>{{u.count}}</td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-6">
+            <div class="row">
+                <h2 class="text-center">아래팀 청소 총 개수 : {{dc_total_count}}</h2>
+            </div>
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>객실번호</th>
+                        <th>청소카운트</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in dc%}
+                    <tr>
+                        <td>{{d.room}}</td>
+                        <td>{{d.count}}</td>
+                    </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>객실번호</th>
+                <th>시작시간</th>
+                <th>종료시간</th>
+            </tr>
+        </thead>
+        <tbody>            
+            {% for t in temp.up%}
+            <tr>
+                <td>{{t.room_number}}</td>
+                <td>{{t.start_time}}</td>
+                <td>{{t.end_time}}</td>
+            </tr>
+            {%endfor%}
+            {% for t in temp.down%}
+            <tr>
+                <td>{{t.room_number}}</td>
+                <td>{{t.start_time}}</td>
+                <td>{{t.end_time}}</td>
+            </tr>
+            {%endfor%}
+        </tbody>
+
+    </table>
+</div>
+
+{% endblock %}

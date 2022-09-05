@@ -115,5 +115,9 @@
 <script>
     test = document.getElementsByClassName('outRoom')
     $('.outRoom').parents('div.room_rec').css('background-color','#adb5bd')
+
+    setInterval(function(){
+	location.reload();
+    },60000)
 </script>
 {%endblock%}
